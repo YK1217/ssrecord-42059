@@ -1,6 +1,10 @@
 <h2>ログイン</h2>
 
+<%= link_to "新規登録", new_user_registration_path %>
+
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
   <div class="field">
     <p><%= f.label :"メールアドレス" %></p>
     <p><%= f.email_field :email, autofocus: true, autocomplete: "email" %></p>
@@ -16,4 +20,4 @@
   </div>
 <% end %>
 
-<%= render "devise/shared/links" %>
+<%# render "devise/shared/links" %>
