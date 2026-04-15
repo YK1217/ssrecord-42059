@@ -1,0 +1,7 @@
+<h1>マイページ</h1>
+
+<p>ユーザー名: <%= @user.name %></p>
+<p>メールアドレス: <%= @user.email %></p>
+
+<%= link_to "トップページ", root_path %><br>
+<%= button_to "ログアウト", destroy_user_session_path, method: :delete %>
