@@ -1,10 +1,8 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable
 
-  VALID_PASSWORD_REGEX = /\A(?=.*?[a-zA-Z])(?=.*?\d)[a-zA-Z\d]+\z/
+  VALID_PASSWORD_REGEX = /\A(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+\z/
 
   validates :name, presence: true, length: { maximum: 10 }
 
@@ -15,8 +13,16 @@ class User < ApplicationRecord
 
   validates :password,
             presence: true,
-            length: { minimum: 8 },
-            format: { with: VALID_PASSWORD_REGEX },
+            length: { minimum: 8, maximum: 128 },
+            format: {
+              with: VALID_PASSWORD_REGEX,
+              message: 'は半角英数字のみ使用でき、英字と数字をそれぞれ1文字以上含めてください'
+            },
+            confirmation: true,
+            if: :password_required?
+
+  validates :password_confirmation,
+            presence: true,
             if: :password_required?
 
   private
