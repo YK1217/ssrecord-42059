@@ -2,17 +2,33 @@
 
 <%= link_to "新規登録", new_user_registration_path %>
 
+<% if flash[:alert] %>
+  <div class="alert">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<% if resource.errors.any? %>
+  <div class="error-messages">
+    <h3>ログインに失敗しました</h3>
+    <ul>
+      <% resource.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
 
   <div class="field">
-    <p><%= f.label :"メールアドレス" %></p>
-    <p><%= f.email_field :email, autofocus: true, autocomplete: "email" %></p>
+    <%= f.label :"メールアドレス" %><br>
+    <%= f.email_field :email, autofocus: true %>
   </div>
 
   <div class="field">
-    <p><%= f.label :"パスワード" %></p>
-    <p><%= f.password_field :password, autocomplete: "current-password" %></p>
+    <%= f.label :"パスワード" %><br>
+    <%= f.password_field :password %>
   </div>
 
   <div class="actions">
