@@ -75,3 +75,6 @@ gem 'pry-rails'
 gem 'devise'
 
 gem 'rails-i18n'
+
+gem "bootstrap", "~> 5.3.8"
+gem "dartsass-rails"
