@@ -3,7 +3,7 @@
 <%= link_to "新規登録", new_user_registration_path %>
 
 <% if flash[:alert] %>
-  <div class="alert">
+  <div class="alert alert-danger" role="alert">
     <%= flash[:alert] %>
   </div>
 <% end %>
