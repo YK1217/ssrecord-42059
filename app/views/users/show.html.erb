@@ -1,7 +1,10 @@
 <h1>マイページ</h1>
 
-<p>ユーザー名: <%= @user.name %></p>
-<p>メールアドレス: <%= @user.email %></p>
+<div class="card mb-3">
+  <div class="card-body">
+    <p class="card-title">ユーザー名: <%= @user.name %></p>
+    <p class="card-text">メールアドレス: <%= @user.email %></p>
+  </div>
+</div>
 
-<%= link_to "トップページ", root_path %><br>
-<%= button_to "ログアウト", destroy_user_session_path, method: :delete %>
+<%= link_to "トップページ", root_path, class: "btn btn-primary"%>
