@@ -11,6 +11,12 @@
   </head>
 
   <body>
-    <%= yield %>
+    <% if user_signed_in? %>
+      <%= render "shared/header" %>
+    <% end %>
+
+    <div class="container mt-3">
+      <%= yield %>
+    </div>
   </body>
 </html>

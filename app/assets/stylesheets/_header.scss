@@ -1,0 +1,25 @@
+// ヘッダー全体
+.navbar {
+  padding: 0.5rem 1rem;
+}
+
+// 左右共通
+.navbar .nav-link {
+  font-size: 0.95rem;
+  color: #fff;
+
+  &:hover {
+    color: #ccc;
+  }
+}
+
+// 右側ボタンサイズ調整
+.navbar .btn-sm {
+  padding: 0.25rem 0.5rem;
+}
+
+// ユーザー名表示
+.navbar .user-name {
+  color: #fff;
+  font-size: 0.95rem;
+}
