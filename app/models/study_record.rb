@@ -7,7 +7,9 @@ class StudyRecord < ApplicationRecord
   before_validation :set_end_time
   before_validation :set_study_time
 
-  validates :start_time, presence: true  validates :study_date, uniqueness: {
+  validates :start_time, presence: true
+
+  validates :study_date, uniqueness: {
     scope: :user_id,
     message: "の学習記録はすでに登録されています"
   }
