@@ -1,8 +1,16 @@
 ja:
   activerecord:
+    models:
+      study_record: 学習記録
     attributes:
       user:
         name: ユーザー名
+      study_record:
+        start_time: 学習開始日時
+        end_time: 学習終了時刻
+        study_date: 学習日
+        study_time: 学習時間
+        study_memo: 学習内容
   errors:
     messages:
       taken: はすでに使用されています
