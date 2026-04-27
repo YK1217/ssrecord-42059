@@ -1,5 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe StudyRecord, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before do
+    @study_record = FactoryBot.build(:study_record)
+  end
+
 end
