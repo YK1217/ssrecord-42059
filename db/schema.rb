@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_04_24_061416) do
+ActiveRecord::Schema[7.1].define(version: 2026_04_27_065907) do
+  create_table "sleep_records", charset: "utf8mb3", force: :cascade do |t|
+    t.datetime "start_time", null: false
+    t.datetime "end_time"
+    t.date "sleep_date", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "sleep_time"
+    t.index ["user_id", "sleep_date"], name: "index_sleep_records_on_user_id_and_sleep_date", unique: true
+    t.index ["user_id"], name: "index_sleep_records_on_user_id"
+  end
+
   create_table "study_records", charset: "utf8mb3", force: :cascade do |t|
     t.datetime "start_time", null: false
     t.datetime "end_time"
@@ -36,5 +48,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_24_061416) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "sleep_records", "users"
   add_foreign_key "study_records", "users"
 end
