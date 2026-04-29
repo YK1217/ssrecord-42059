@@ -90,7 +90,7 @@ class SleepRecord < ApplicationRecord
 
     study_records = set_candidate_study_records
 
-    if study_records.any? {|study_record| time_overlap?(study_record)} do
+    if study_records.any? {|study_record| time_overlap?(study_record)}
       errors.add(:base, "学習時間と重複しています")
     end
   end
