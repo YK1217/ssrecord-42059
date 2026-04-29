@@ -2,6 +2,8 @@ ja:
   activerecord:
     models:
       study_record: 学習記録
+      sleep_record: 睡眠記録
+      user: ユーザー
     attributes:
       user:
         name: ユーザー名
@@ -11,6 +13,11 @@ ja:
         study_date: 学習日
         study_time: 学習時間
         study_memo: 学習内容
+      sleep_record:
+        start_time: 就寝日時
+        end_time: 起床時刻
+        sleep_date: 睡眠日
+        sleep_time: 睡眠時間
   errors:
     messages:
       taken: はすでに使用されています
