@@ -35,12 +35,12 @@ RSpec.describe StudyRecord, type: :model do
         expect(@study_record.errors.full_messages).to include "学習開始日時は現在より未来の日時を登録できません"
       end
       it 'start_timeが9:00〜17:00の範囲でなければ登録できない' do
-        @study_record.start_time = @study_record.start_time.change(hour: 8, minute: 30)
+        @study_record.start_time = @study_record.start_time.change(hour: 8, min: 30)
         @study_record.valid?
         expect(@study_record.errors.full_messages).to include "学習開始日時は9:00〜17:00の範囲で入力してください"
       end
       it 'end_clockに入力した時刻がstart_timeより前だと登録できない' do
-        @study_record.start_time = @study_record.start_time.change(hour: 10, minute: 30)
+        @study_record.start_time = @study_record.start_time.change(hour: 10, min: 30)
         @study_record.end_clock = '9:30'
         @study_record.valid?
         expect(@study_record.errors.full_messages).to include "学習終了時刻は学習開始日時より後の時刻を入力してください"
@@ -60,6 +60,12 @@ RSpec.describe StudyRecord, type: :model do
         @study_record.end_clock = '17:30'
         @study_record.valid?
         expect(@study_record.errors.full_messages).to include "学習終了時刻は9:00〜17:00の範囲で入力してください"
+      end
+      it '学習時間が1時間以上8時間以下でなければ登録できない' do
+        @study_record.start_time = @study_record.start_time.change(hour: 9, min: 30)
+        @study_record.end_clock = '9:55'
+        @study_record.valid?
+        expect(@study_record.errors.full_messages).to include "学習時間は1時間以上8時間以下になるよう入力してください"
       end
       it '既に同一user同一日付の学習記録が登録されている場合は登録できない' do
         same_user = @study_record.user
