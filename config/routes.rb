@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   root "homes#top"
   resource :user, only: [:show]
   resources :study_records, only: [:new, :create]
+  resources :sleep_records, only: [:new, :create]
 end
