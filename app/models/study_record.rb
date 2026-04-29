@@ -18,9 +18,11 @@ class StudyRecord < ApplicationRecord
 
   validate :start_time_must_not_be_future
   validate :start_time_must_be_within_study_hours
+  validate :start_time_must_not_overlap_with_sleep_records
   validate :end_time_must_be_after_start_time
   validate :end_time_must_not_be_future
   validate :end_time_must_be_within_study_hours
+  validate :study_time_must_not_overlap_with_sleep_records
 
   private
 
@@ -69,6 +71,18 @@ class StudyRecord < ApplicationRecord
     end
   end
 
+  def start_time_must_not_overlap_with_sleep_records
+    return if start_time.blank?
+
+    sleep_records = set_candidate_sleep_records
+
+    sleep_records.each do |sleep_record|
+      if sleep_record.start_time <= start_time && start_time <= sleep_record.end_time
+        errors.add(:base, "睡眠時間と重複しています")
+      end
+    end
+  end
+
   def end_time_must_be_after_start_time
     return if start_time.blank?
     return if end_time.blank?
@@ -97,5 +111,31 @@ class StudyRecord < ApplicationRecord
   def within_study_hours?(time)
     minutes = time.hour * 60 + time.min
     minutes.between?(9 * 60, 17 * 60)
+  end
+
+  def study_time_must_not_overlap_with_sleep_records
+    return if start_time.blank?
+    return if end_time.blank?
+
+    sleep_records = set_candidate_sleep_records
+
+    if sleep_records.any? {|sleep_record| time_overlap?(sleep_record)} do
+      errors.add(:base, "睡眠時間と重複しています")
+    end
+  end
+
+  def set_candidate_sleep_records
+    return if user_id.blank?
+
+    from = start_time - 1.day
+    to = start_time + 1.day
+
+    candidate_sleep_records = StudyRecord.where(user_id:user_id, start_time:from...to).where.not(end_time: nil)
+
+    return candidate_sleep_records
+  end
+
+  def time_overlap?(other_record)
+    start_time <= other_record.end_time && other_record.start_time <= end_time
   end
 end
