@@ -3,6 +3,9 @@ class User < ApplicationRecord
          :recoverable, :rememberable
 
   has_many :study_records, dependent: :destroy
+  has_many :sleep_records, dependent: :destroy
+
+  attr_accessor :name, :email, :password
 
   VALID_PASSWORD_REGEX = /\A(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+\z/
 
