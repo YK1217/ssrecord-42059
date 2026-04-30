@@ -28,7 +28,7 @@ RSpec.describe StudyRecord, type: :model do
         expect(@study_record.errors.full_messages).to include "学習開始日時を入力してください"
       end
       it 'start_timeが未来の日時であれば登録できない' do
-        tomorrow_date = Time.zone.tomorrow
+        tomorrow_date = Date.tomorrow
         @study_record.end_clock = ''
         @study_record.start_time = @study_record.start_time.change(year: tomorrow_date.year, month: tomorrow_date.month, day: tomorrow_date.day)
         @study_record.valid?
@@ -59,7 +59,7 @@ RSpec.describe StudyRecord, type: :model do
         expect(@study_record.errors.full_messages).to include "学習終了時刻は学習開始日時より後の時刻を入力してください"
       end
       it 'start_timeが過去でもend_timeが未来になる場合は登録できない' do
-        today_date = Time.current.to_date
+        today_date = Time.zone.today
         test_time = Time.zone.local(today_date.year, today_date.month, today_date.day, 12, 30)
         @study_record.start_time = Time.zone.local(today_date.year, today_date.month, today_date.day, 10, 30)
         @study_record.end_clock = '15:00'
@@ -84,7 +84,7 @@ RSpec.describe StudyRecord, type: :model do
         same_user = FactoryBot.create(:user)
         @study_record = FactoryBot.build(:study_record, user: same_user)
         same_date = @study_record.start_time.to_date
-        @study_record.save
+        @study_record.save!
         another_study_record = FactoryBot.build(:study_record, user: same_user)
         another_study_record.start_time = another_study_record.start_time.change(year: same_date.year, month: same_date.month, day: same_date.day)
         another_study_record.valid?

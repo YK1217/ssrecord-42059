@@ -70,7 +70,7 @@ class SleepRecord < ApplicationRecord
 
     if study_records.present?
       study_records.each do |study_record|
-        if study_record.start_time <= start_time && start_time <= study_record.end_time && !errors.added?(:base, "学習時間と重複しています")
+        if study_record.start_time < start_time && start_time < study_record.end_time && !errors.added?(:base, "学習時間と重複しています")
         errors.add(:base, "学習時間と重複しています")
         end
       end
@@ -109,6 +109,6 @@ class SleepRecord < ApplicationRecord
   end
 
   def time_overlap?(other_record)
-    start_time <= other_record.end_time && other_record.start_time <= end_time
+    start_time < other_record.end_time && other_record.start_time < end_time
   end
 end
