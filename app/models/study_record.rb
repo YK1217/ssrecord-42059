@@ -76,9 +76,11 @@ class StudyRecord < ApplicationRecord
 
     sleep_records = set_candidate_sleep_records
 
-    sleep_records.each do |sleep_record|
-      if sleep_record.start_time <= start_time && start_time <= sleep_record.end_time
+    if sleep_records.present?
+      sleep_records.each do |sleep_record|
+        if sleep_record.start_time <= start_time && start_time <= sleep_record.end_time && !errors.added?(:base, "睡眠時間と重複しています")
         errors.add(:base, "睡眠時間と重複しています")
+        end
       end
     end
   end
@@ -119,18 +121,18 @@ class StudyRecord < ApplicationRecord
 
     sleep_records = set_candidate_sleep_records
 
-    if sleep_records.any? {|sleep_record| time_overlap?(sleep_record)}
+    if sleep_records.present? && sleep_records.any? {|sleep_record| time_overlap?(sleep_record)} && !errors.added?(:base, "睡眠時間と重複しています")
       errors.add(:base, "睡眠時間と重複しています")
     end
   end
 
   def set_candidate_sleep_records
-    return if user_id.blank?
+    return SleepRecord.none if user.nil?
 
     from = start_time - 1.day
     to = start_time + 1.day
 
-    candidate_sleep_records = StudyRecord.where(user_id:user_id, start_time:from...to).where.not(end_time: nil)
+    candidate_sleep_records = SleepRecord.where(user_id:user_id, start_time:from...to).where.not(end_time: nil)
 
     return candidate_sleep_records
   end
