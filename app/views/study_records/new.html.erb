@@ -1,37 +1,6 @@
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6">
-      <div class="card shadow">
-        <div class="card-body p-4">
-          <h1 class="h3 text-center mb-4">学習時間登録</h1>
-
-          <%= render "shared/error_messages", resource: @study_record %>
-
-          <%= form_with model: @study_record, local: true do |f| %>
-            <div class="mb-3">
-              <%= f.label :start_time, "学習開始日時", class: "form-label" %>
-              <%= f.datetime_field :start_time, class: "form-control" %>
-            </div>
-
-            <div class="mb-3">
-              <%= f.label :end_clock, "学習終了時刻", class: "form-label" %>
-              <%= f.time_field :end_clock, class: "form-control" %>
-              <div class="form-text">
-                未入力の場合は、終了時刻未登録の記録として保存されます。
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <%= f.label :study_memo, "学習内容", class: "form-label" %>
-              <%= f.text_area :study_memo, class: "form-control", rows: 4 %>
-            </div>
-
-            <div class="d-grid">
-              <%= f.submit "登録する", class: "btn btn-primary" %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<%= render "shared/time_record_form",
+  record: @study_record,
+  form_title: "学習時間登録",
+  start_time_label: "学習開始日時",
+  end_clock_label: "学習終了時刻",
+  extra_fields_partial: "study_records/memo_fields" %>
