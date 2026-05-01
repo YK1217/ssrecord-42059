@@ -1,2 +1,97 @@
-<h1>DailyRecords#index</h1>
-<p>Find me in app/views/daily_records/index.html.erb</p>
+<div class="container py-4">
+  <h1 class="h3 mb-4 text-center">日別一覧</h1>
+
+  <% if @dates.empty? %>
+    <div class="alert alert-info">
+      まだ学習記録・睡眠記録が登録されていません。
+    </div>
+  <% else %>
+    <% @dates.each do |date| %>
+      <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+          <%= l date, format: :long %>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>分類</th>
+                  <th>開始時間</th>
+                  <th>終了時間</th>
+                  <th>記録時間</th>
+                  <th>学習メモ</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% sleep_records = @sleep_records_by_date[date] || [] %>
+                <% study_records = @study_records_by_date[date] || [] %>
+
+                <% sleep_records.each do |record| %>
+                  <tr>
+                    <td>睡眠時間</td>
+                    <td><%= l record.start_time, format: :time %></td>
+                    <td>
+                      <%= record.end_time.present? ? l(record.end_time, format: :time) : "未完了" %>
+                    </td>
+                    <td>
+                      <%= record.sleep_time.present? ? "#{record.sleep_time}分" : "未完了" %>
+                    </td>
+                    <td>-</td>
+                    <td>
+                      <button class="btn btn-outline-primary btn-sm" disabled>編集</button>
+                      <button class="btn btn-outline-danger btn-sm" disabled>削除</button>
+                    </td>
+                  </tr>
+                <% end %>
+
+                <% study_records.each do |record| %>
+                  <tr>
+                    <td>学習時間</td>
+                    <td><%= l record.start_time, format: :time %></td>
+                    <td>
+                      <%= record.end_time.present? ? l(record.end_time, format: :time) : "未完了" %>
+                    </td>
+                    <td>
+                      <%= record.study_time.present? ? "#{record.study_time}分" : "未完了" %>
+                    </td>
+                    <td><%= record.study_memo.presence || "-" %></td>
+                    <td>
+                      <button class="btn btn-outline-primary btn-sm" disabled>編集</button>
+                      <button class="btn btn-outline-danger btn-sm" disabled>削除</button>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <nav>
+      <ul class="pagination justify-content-center">
+        <% if @page > 1 %>
+          <li class="page-item">
+            <%= link_to "前へ", root_path(page: @page - 1), class: "page-link" %>
+          </li>
+        <% end %>
+
+        <% (1..@total_pages).each do |page| %>
+          <li class="page-item <%= "active" if page == @page %>">
+            <%= link_to page, root_path(page: page), class: "page-link" %>
+          </li>
+        <% end %>
+
+        <% if @page < @total_pages %>
+          <li class="page-item">
+            <%= link_to "次へ", root_path(page: @page + 1), class: "page-link" %>
+          </li>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
+</div>
