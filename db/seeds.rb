@@ -3,21 +3,21 @@ test_user = User.find_or_initialize_by(email: "test@example.ne.jp")
 test_user.name = "Test_User"
 test_user.password = ENV["TEST_PASSWORD"]
 test_user.password_confirmation = test_user.password
-test_user.save!
 
-puts "テストログイン用ユーザーを作成しました"
-puts "email: test@example.ne.jp"
-puts "name: Test_User"
+if test_user.save
+  puts "テストログイン用ユーザーを作成しました"
+  puts "email: test@example.ne.jp"
+  puts "name: Test_User"
+else
+  puts "テストログイン用ユーザーの作成に失敗しました"
+  puts test_user.errors.full_messages
+  exit
+end
 
-  if test_user.nil?
-    puts "テストログイン用ユーザーの作成に失敗しました"
-    exit
-  end
+# 作っておきたい記録の数
+target_count = 11
 
-  # 作っておきたい記録の数
-  target_count = 11
-
-  needed_count = target_count - test_user.study_records.size
+needed_count = target_count - test_user.study_records.size
 
 if needed_count > 0
   puts "----------------------------------------"
@@ -42,5 +42,32 @@ if needed_count > 0
   end
 
   puts "\n学習記録の作成を終了しました"
+
+end
+
+needed_count = target_count - test_user.sleep_records.size
+
+if needed_count > 0
+  puts "----------------------------------------"
+  puts "テストログイン用ユーザーに睡眠記録を #{needed_count}個作ります"
+  current_date = Date.yesterday
+
+  while test_user.sleep_records.size < target_count do
+    unless test_user.sleep_records.where(sleep_date: current_date).exists?
+      new_record = FactoryBot.build(:sleep_record, user: test_user)
+      base_time = Time.zone.local(current_date.year, current_date.month, current_date.day, 22, 0)
+      new_record.start_time = base_time + rand(0..4 * 60).minutes
+      new_record.save!
+      puts "\nstart_time: #{new_record.start_time}"
+      puts "end_clock: #{new_record.end_clock}"
+    end
+    current_date -= 2
+
+    if current_date < Date.current - 1.year
+      break
+    end
+  end
+
+  puts "\n睡眠記録の作成を終了しました"
 
 end
