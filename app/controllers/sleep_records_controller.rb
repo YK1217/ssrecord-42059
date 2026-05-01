@@ -9,7 +9,7 @@ class SleepRecordsController < ApplicationController
     @sleep_record = current_user.sleep_records.new(sleep_record_params)
 
     if @sleep_record.save
-      redirect_to user_path, notice: "睡眠時間を登録しました"
+      redirect_to root_path, notice: "睡眠時間を登録しました"
     else
       render :new, status: :unprocessable_entity
     end

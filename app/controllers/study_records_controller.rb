@@ -9,7 +9,7 @@ class StudyRecordsController < ApplicationController
     @study_record = current_user.study_records.new(study_record_params)
 
     if @study_record.save
-      redirect_to user_path, notice: "学習時間を登録しました"
+      redirect_to root_path, notice: "学習時間を登録しました"
     else
       render :new, status: :unprocessable_entity
     end
