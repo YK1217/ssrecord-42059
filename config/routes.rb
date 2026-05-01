@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  root "homes#top"
+  root "daily_records#index"
+
   resource :user, only: [:show]
   resources :study_records, only: [:new, :create]
   resources :sleep_records, only: [:new, :create]
