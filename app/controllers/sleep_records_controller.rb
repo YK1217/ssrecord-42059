@@ -1,5 +1,5 @@
 class SleepRecordsController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
 
   def new
     @sleep_record = SleepRecord.new
