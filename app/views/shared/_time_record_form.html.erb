@@ -18,7 +18,13 @@
               <%= f.time_field :end_clock, class: "form-control" %>
 
               <div class="form-text">
-                未入力の場合は、終了時刻未登録の記録として保存されます。
+                <% if record.new_record? %>
+                  未入力の場合は、終了時刻未登録の記録として保存されます。
+                <% elsif record.end_time_in_database.blank? %>
+                  記録が未完了となっています。こちらを入力することをおすすめします。
+                <% else %>
+                  に終了時刻が登録されている場合、空欄にはできません。
+                <% end %>
               </div>
             </div>
 
