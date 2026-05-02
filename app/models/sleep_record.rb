@@ -20,6 +20,13 @@ class SleepRecord < ApplicationRecord
   validate :start_time_must_not_overlap_with_study_records
   validate :end_time_must_not_be_future
   validate :sleep_time_must_not_overlap_with_study_records
+  validate :end_clock_cannot_be_blank_when_end_time_already_exists, on: :update
+
+  def set_end_clock_from_end_time
+    return if end_time.blank?
+
+    self.end_clock = end_time.strftime("%H:%M")
+  end
 
   private
 
@@ -112,9 +119,12 @@ class SleepRecord < ApplicationRecord
     start_time < other_record.end_time && other_record.start_time < end_time
   end
 
-  def set_end_clock_from_end_time
-    return if end_time.blank?
+  def end_clock_cannot_be_blank_when_end_time_already_exists
+    return if end_time_in_database.blank?
+    return if end_clock.present?
 
-    self.end_clock = end_time.strftime("%H:%M")
+    self.end_clock = end_time_in_database.strftime("%H:%M")
+    errors.add(:end_time, "は登録済みの起床時刻がある場合、空欄にできません")
   end
+
 end
