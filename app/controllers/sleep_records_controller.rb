@@ -15,6 +15,12 @@ class SleepRecordsController < ApplicationController
     end
   end
 
+  def destroy
+    sleep_record = SleepRecord.find(params[:id])
+    sleep_record.destroy
+    redirect_to root_path, notice: "睡眠時間を削除しました"
+  end
+
   private
 
   def sleep_record_params

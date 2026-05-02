@@ -15,6 +15,12 @@ class StudyRecordsController < ApplicationController
     end
   end
 
+  def destroy
+    study_record = StudyRecord.find(params[:id])
+    study_record.destroy
+    redirect_to root_path, notice: "学習時間を削除しました"
+  end
+
   private
 
   def study_record_params
