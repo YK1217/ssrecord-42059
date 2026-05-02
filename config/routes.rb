@@ -4,6 +4,6 @@ Rails.application.routes.draw do
   root "daily_records#index"
 
   resource :user, only: [:show]
-  resources :study_records, only: [:new, :create,:destroy]
-  resources :sleep_records, only: [:new, :create,:destroy]
+  resources :study_records, only: [:new, :create,:destroy, :edit, :update]
+  resources :sleep_records, only: [:new, :create,:destroy, :edit, :update]
 end
