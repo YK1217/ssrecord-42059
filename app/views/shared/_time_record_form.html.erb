@@ -19,11 +19,11 @@
 
               <div class="form-text">
                 <% if record.new_record? %>
-                  未入力の場合は、終了時刻未登録の記録として保存されます。
+                  未入力の場合は、<%=  end_clock_label %>が未登録の記録として保存されます。
                 <% elsif record.end_time_in_database.blank? %>
                   記録が未完了となっています。こちらを入力することをおすすめします。
                 <% else %>
-                  に終了時刻が登録されている場合、空欄にはできません。
+                  <%= end_clock_label %>が登録されている場合、空欄にはできません。
                 <% end %>
               </div>
             </div>
