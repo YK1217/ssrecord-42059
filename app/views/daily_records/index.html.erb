@@ -35,10 +35,10 @@
                     <td>睡眠時間</td>
                     <td><%= l record.start_time, format: :time %></td>
                     <td>
-                      <%= record.end_time.present? ? l(record.end_time, format: :time) : "未完了" %>
+                      <%= format_end_time(record.end_time) %>
                     </td>
                     <td>
-                      <%= record.sleep_time.present? ? "#{record.sleep_time}分" : "未完了" %>
+                      <%= format_record_time(record.sleep_time) %>
                     </td>
                     <td>-</td>
                     <td>
@@ -53,10 +53,10 @@
                     <td>学習時間</td>
                     <td><%= l record.start_time, format: :time %></td>
                     <td>
-                      <%= record.end_time.present? ? l(record.end_time, format: :time) : "未完了" %>
+                      <%= format_end_time(record.end_time) %>
                     </td>
                     <td>
-                      <%= record.study_time.present? ? "#{record.study_time}分" : "未完了" %>
+                      <%= format_record_time(record.study_time) %>
                     </td>
                     <td><%= record.study_memo.presence || "-" %></td>
                     <td>
