@@ -42,7 +42,7 @@
                     </td>
                     <td>-</td>
                     <td>
-                      <button class="btn btn-outline-primary btn-sm" disabled>編集</button>
+                      <%= link_to "編集" , edit_sleep_record_path(record.id), class: "btn btn-outline-primary btn-sm" %>
                       <%= link_to "削除", sleep_record_path(record.id),data: {turbo_method: :delete,turbo_confirm: "この睡眠記録を削除しますか？"}, class: "btn btn-outline-danger btn-sm" %>
                     </td>
                   </tr>
@@ -60,8 +60,8 @@
                     </td>
                     <td><%= record.study_memo.presence || "-" %></td>
                     <td>
-                      <button class="btn btn-outline-primary btn-sm" disabled>編集</button>
-                      <%= link_to "削除", study_record_path(record.id),data: {turbo_method: :delete,turbo_confirm: "この睡眠記録を削除しますか？"}, class: "btn btn-outline-danger btn-sm" %>
+                      <%= link_to "編集", edit_study_record_path(record.id),class: "btn btn-outline-primary btn-sm" %>
+                      <%= link_to "削除", study_record_path(record.id),data: {turbo_method: :delete,turbo_confirm: "この学習記録を削除しますか？"}, class: "btn btn-outline-danger btn-sm" %>
                     </td>
                   </tr>
                 <% end %>
