@@ -27,9 +27,9 @@ class StudyRecordsController < ApplicationController
   end
 
   def update
-    study_record = current_user.study_records.find(params[:id])
+    @study_record = current_user.study_records.find(params[:id])
 
-    if study_record.update(study_record_params)
+    if @study_record.update(study_record_params)
       redirect_to root_path, notice: "学習時間を更新しました"
     else
       render :edit, status: :unprocessable_entity
