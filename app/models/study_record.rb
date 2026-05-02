@@ -140,4 +140,10 @@ class StudyRecord < ApplicationRecord
   def time_overlap?(other_record)
     start_time < other_record.end_time && other_record.start_time < end_time
   end
+
+  def set_end_clock_from_end_time
+    return if end_time.blank?
+
+    self.end_clock = end_time.strftime("%H:%M")
+  end
 end

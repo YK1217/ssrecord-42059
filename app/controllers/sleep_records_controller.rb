@@ -16,9 +16,24 @@ class SleepRecordsController < ApplicationController
   end
 
   def destroy
-    sleep_record = SleepRecord.find(params[:id])
+    sleep_record = current_user.sleep_records.find(params[:id])
     sleep_record.destroy
     redirect_to root_path, notice: "睡眠時間を削除しました"
+  end
+
+  def edit
+    @sleep_record = current_user.sleep_records.find(params[:id])
+    @study_record.set_end_clock_from_end_time
+  end
+
+  def update
+    sleep_record = current_user.sleep_records.find(params[:id])
+
+    if sleep_record.update(sleep_record_params)
+      redirect_to root_path, notice: "睡眠時間を更新しました"
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   private
