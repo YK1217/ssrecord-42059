@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   resource :user, only: [:show]
   resources :study_records, only: [:new, :create,:destroy, :edit, :update]
   resources :sleep_records, only: [:new, :create,:destroy, :edit, :update]
+  resources :weekly_records, only: [:index]
 end
