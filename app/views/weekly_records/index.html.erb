@@ -1,2 +1,148 @@
-<h1>WeeklyRecords#index</h1>
-<p>Find me in app/views/weekly_records/index.html.erb</p>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">週間集計</h1>
+  </div>
+
+  <% if @week_options.empty? %>
+    <div class="alert alert-info">
+      まだ学習記録・睡眠記録が登録されていません。
+    </div>
+  <% else %>
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        <%= form_with url: weekly_records_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
+          <div class="col-12 col-md-8">
+            <%= label_tag :week_start, "表示する週", class: "form-label" %>
+            <%= select_tag :week_start,
+                  options_for_select(
+                    @week_options.map { |week_start|
+                      [
+                        "#{l week_start, format: :long} 〜 #{l week_start + 6.days, format: :long}",
+                        week_start
+                      ]
+                    },
+                    @week_start
+                  ),
+                  class: "form-select" %>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <%= submit_tag "表示", class: "btn btn-primary w-100" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card shadow mb-4">
+      <div class="card-header bg-primary text-white">
+        <%= l @week_start, format: :long %> 〜 <%= l @week_end, format: :long %>
+      </div>
+
+      <div class="card-body">
+        <div class="row g-3 text-center">
+          <div class="col-12 col-md-4">
+            <div class="border rounded p-3 h-100">
+              <div class="fw-bold mb-2">合計学習時間</div>
+              <div><%= format_record_time(@total_study_time) %></div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="border rounded p-3 h-100">
+              <div class="fw-bold mb-2">平均学習時間</div>
+              <div><%= @average_study_time.nil? ? "-" : format_record_time(@average_study_time) %></div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="border rounded p-3 h-100">
+              <div class="fw-bold mb-2">平均睡眠時間</div>
+              <div><%= @average_sleep_time.nil? ? "-" : format_record_time(@average_sleep_time) %></div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="border rounded p-3 h-100">
+              <div class="fw-bold mb-2">記録日数</div>
+              <div><%= @recorded_days_count %>日</div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="border rounded p-3 h-100">
+              <div class="fw-bold mb-2">未完了記録</div>
+              <div><%= @has_incomplete_records ? exists_badge : none_badge %></div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <div class="border rounded p-3 h-100">
+              <div class="fw-bold mb-2">未登録日</div>
+              <div><%= @has_missing_past_dates ? exists_badge : none_badge %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow">
+      <div class="card-header bg-light fw-bold">
+        曜日ごとの一覧
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>日付</th>
+                <th>曜日</th>
+                <th>学習時間</th>
+                <th>睡眠時間</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @week_dates.each do |date| %>
+                <% study_records = @study_records_by_date[date] || [] %>
+                <% sleep_records = @sleep_records_by_date[date] || [] %>
+
+                <% completed_study_time = study_records.select { |r| r.study_time.present? && r.end_time.present? }.sum(&:study_time) %>
+                <% completed_sleep_time = sleep_records.select { |r| r.sleep_time.present? && r.end_time.present? }.sum(&:sleep_time) %>
+
+                <tr>
+                  <td><%= l date, format: :long %></td>
+                  <td><%= %w[日 月 火 水 木 金 土][date.wday] %></td>
+
+                  <td>
+                    <% if study_records.empty? %>
+                      <%= unregistered_badge %>
+                    <% elsif study_records.any? { |r| r.end_time.blank? || r.study_time.blank? } %>
+                      <%= incomplete_badge %>
+                    <% else %>
+                      <%= format_record_time(completed_study_time) %>
+                    <% end %>
+                  </td>
+
+                  <td>
+                    <% if sleep_records.empty? %>
+                      <%= unregistered_badge %>
+                    <% elsif sleep_records.any? { |r| r.end_time.blank? || r.sleep_time.blank? } %>
+                      <%= incomplete_badge %>
+                    <% else %>
+                      <%= format_record_time(completed_sleep_time) %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-center mt-4">
+          <%= link_to "日別一覧へ戻る", root_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

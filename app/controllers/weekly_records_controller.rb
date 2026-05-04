@@ -53,11 +53,7 @@ class WeeklyRecordsController < ApplicationController
     dates = current_user.study_records.pluck(:study_date) +
             current_user.sleep_records.pluck(:sleep_date)
 
-    dates.compact
-         .map { |date| date.beginning_of_week(:monday) }
-         .uniq
-         .sort
-         .reverse
+    dates.compact.map { |date| date.beginning_of_week(:monday) }.uniq.sort.reverse
   end
 
   def latest_record_week_start
