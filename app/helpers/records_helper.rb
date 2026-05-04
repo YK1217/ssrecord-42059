@@ -21,12 +21,19 @@ module RecordsHelper
     l(end_time, format: :time)
   end
 
-  # 未完了バッジ
   def incomplete_badge
-    content_tag(
-      :span,
-      "未完了",
-      class: "badge bg-warning text-dark"
-    )
+    content_tag(:span, "未完了", class: "badge bg-warning text-dark")
+  end
+
+  def unregistered_badge
+    content_tag(:span, "未登録", class: "badge bg-secondary")
+  end
+
+  def exists_badge
+    content_tag(:span, "あり", class: "badge bg-danger")
+  end
+
+  def none_badge
+    content_tag(:span, "なし", class: "badge bg-success")
   end
 end
