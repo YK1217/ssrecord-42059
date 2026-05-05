@@ -5,6 +5,12 @@
 
   <h1 class="h3 mb-4 text-center">日別一覧</h1>
 
+  <% if flash[:notice] %>
+    <div class="alert alert-success" role="alert">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+
   <% if @dates.empty? %>
     <div class="alert alert-info">
       まだ学習記録・睡眠記録が登録されていません。
