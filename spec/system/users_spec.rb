@@ -49,7 +49,7 @@ RSpec.describe "ユーザー新規登録", type: :system do
       # 登録ボタンを押すとエラーが表示され、Userモデルのカウントが上がらない
       expect{
         click_button '新規登録'
-        expect(page).to have_content('入力内容を確認してください')
+        expect(page).to have_selector(".alert-danger",text: '入力内容を確認してください')
     }.not_to change { User.count }
       # 新規登録ページへ戻される
       expect(page).to have_current_path(new_user_registration_path)
