@@ -25,8 +25,6 @@ RSpec.describe "ユーザー新規登録", type: :system do
         click_button '新規登録'
         expect(page).to have_current_path(root_path)
       }.to change { User.count }.by(1)
-      # トップページに移動する事を確認する
-      # expect(page).to have_current_path(root_path)
       # ヘッダーにログアウトボタンが表示される
       expect(page).to have_content('ログアウト')
     end
@@ -65,10 +63,17 @@ RSpec.describe 'ログイン', type: :system do
   context 'ログインができる時' do
     it '保存されているユーザーの情報と合致すればログインができる' do
       # トップページに移動する
+      visit root_path
       # 自動的にログインページに遷移する
+      expect(page).to have_current_path(new_user_session_path)
       # 正しいユーザー情報を入力する
+      fill_in 'メールアドレス', with: @user.email
+      fill_in 'パスワード', with: @user.password
       # ログインボタンを押す
+      click_button 'ログイン'
       # トップページに遷移することを確認する
+      expect(page).to have_current_path(root_path)
+    end
   end
   context 'ログインできない時' do
     it '保存されているユーザーの情報と合致しなければログインできない' do
