@@ -78,11 +78,18 @@ RSpec.describe 'ログイン', type: :system do
   context 'ログインできない時' do
     it '保存されているユーザーの情報と合致しなければログインできない' do
       # トップページに移動する
+      visit root_path
       # 自動的にログインページに遷移する
+      expect(page).to have_current_path(new_user_session_path)
       # 正しくないユーザー情報を入力する
+      fill_in 'メールアドレス', with: ''
+      fill_in 'パスワード', with: ''
       # ログインボタンを押す
+      click_button 'ログイン'
       # エラーメッセージが表示されることを確認する
+      expect(page).to have_selector(".alert-danger",text: 'メールアドレスまたはパスワードが違います。')
       # ログインページへ戻されることを確認する
+      expect(page).to have_current_path(new_user_session_path)
     end
   end
 
