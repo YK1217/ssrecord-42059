@@ -28,11 +28,11 @@ RSpec.describe "学習時間登録", type: :system do
         click_button '登録する'
         expect(page).to have_current_path(root_path)
       }.to change { StudyRecord.count }.by(1)
-      # トップページには先ほど登録した学習時間記録の日時が表示されているカードが存在することを確認する
+      # トップページには先ほど登録した学習時間記録の日付が表示されているカードが存在することを確認する
       study_date = I18n.l(@study_record.start_time.to_date,format: :long)
       expect(page).to have_selector(".card-header",text: study_date)
 
-      # 日時が表示されているカード内に先ほど登録した学習時間記録の内容が表示されていることを確認する
+      # 日付が表示されているカード内に先ほど登録した学習時間記録の内容が表示されていることを確認する
       within(".card", text: study_date) do
         expect(page).to have_content('学習時間')
         expect(page).to have_content I18n.l(@study_record.start_time,format: :time)
@@ -51,4 +51,46 @@ RSpec.describe "学習時間登録", type: :system do
       expect(page).to have_no_content('学習時間登録')
     end
   end
+end
+
+RSpec.describe '学習時間編集' do
+  before do
+    @user = FactoryBot.create(:user)
+    @study_record = FactoryBot.create(:study_record,user: @user)
+  end
+
+  context '学習時間が編集できる時' do
+    it '学習時間を登録したユーザーは編集できる' do
+      # 学習時間を登録したユーザーでログインする
+      # 学習時間記録に編集ページへのリンクがあることを確認する
+      # 編集ページへ遷移する
+      # 既に投稿済みの内容がフォームに入っていることを確認する
+      # 投稿内容を編集する
+      # 送信するとトップページに遷移し、StudyRecordモデルのカウントが変化しないことを確認する
+      # トップページには先ほど編集した学習時間記録の日時が表示されているカードが存在することを確認する
+      # 日付が表示されているカード内に先ほど編集した学習時間記録の内容が表示されていることを確認する
+    end
+  end
+  context '学習時間が編集できない時' do
+    it '学習終了時間登録済みの学習時間記録を未完了に編集する事はできない' do
+      # 学習時間を登録したユーザーでログインする
+      # 学習時間記録に編集ページへのリンクがあることを確認する
+      # 編集ページへ遷移する
+      # 既に登録済みの内容がフォームに入っていることを確認する
+      # 学習終了時刻を削除する
+      # 送信するとエラーが表示され、StudyRecordモデルのカウントが変化しないことを確認する
+      # 学習時間編集画面に戻される事を確認する
+    end
+    it 'ログインしていないユーザーは編集できない' do
+      # トップページに移動する
+      # 自動的にログインページに遷移する事を確認する
+      # 学習時間記録が表示されていない事を確認する
+    end
+    it '学習時間を登録したユーザー以外のユーザーでは編集できない' do
+      # 学習時間を登録したユーザーとは別のユーザーを用意する
+      # 別のユーザーでログインする
+      # 学習時間記録が表示されていない事を確認する
+    end
+  end
+
 end
