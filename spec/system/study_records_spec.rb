@@ -9,12 +9,7 @@ RSpec.describe "学習時間登録", type: :system do
   context '学習時間が登録できる時' do
     it 'ログインしたユーザーは登録できる' do
       # ログインする
-      visit root_path
-      expect(page).to have_current_path(new_user_session_path)
-      fill_in 'メールアドレス', with: @user.email
-      fill_in 'パスワード', with: @user.password
-      click_button 'ログイン'
-      expect(page).to have_current_path(root_path)
+      sign_in(@user)
       # 学習時間登録ページへのボタンがあることを確認する
       expect(page).to have_content('学習時間登録')
       # 学習時間登録ページへ移動する
@@ -34,15 +29,7 @@ RSpec.describe "学習時間登録", type: :system do
 
       # 日付が表示されているカード内に先ほど登録した学習時間記録の内容が表示されていることを確認する
 
-      hour, minute = @study_record.end_clock.split(":").map(&:to_i)
-
-      end_time = Time.zone.local(
-        @study_record.start_time.to_date.year,
-        @study_record.start_time.to_date.month,
-        @study_record.start_time.to_date.day,
-        hour,
-        minute
-      )
+      end_time = build_end_time_from(@study_record)
 
       within(".card", text: study_date) do
         expect(page).to have_content('学習時間')
