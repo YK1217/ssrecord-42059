@@ -11,7 +11,7 @@ class StudyRecordsController < ApplicationController
     if @study_record.save
       redirect_to root_path, notice: "学習時間を登録しました"
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -32,7 +32,7 @@ class StudyRecordsController < ApplicationController
     if @study_record.update(study_record_params)
       redirect_to root_path, notice: "学習時間を更新しました"
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
