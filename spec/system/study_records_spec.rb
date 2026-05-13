@@ -163,10 +163,31 @@ RSpec.describe '学習時間削除' do
   context '学習時間が削除できる時' do
     it '学習時間を登録したユーザーは削除できる' do
       # 学習時間を登録したユーザーでログインする
+      sign_in(@user)
       # トップページには登録済みの学習時間記録の日付が表示されているカードが存在することを確認する
+      study_date_text = I18n.l(@study_record.start_time.to_date,format: :long)
+
+      expect(page).to have_selector(".card-header",text: study_date_text)
       # 日付が表示されているカード内に学習時間記録の開始時間が表示され、同じ行に削除ボタンがあることを確認する
-      # 削除ボタンをクリックし、確認ダイアログでOKをクリックするとトップページに遷移し、学習時間記録が1減ることを確認する
+      start_time_text = I18n.l(@study_record.start_time,format: :time)
+
+      within(".card", text: study_date_text) do
+        expect(page).to have_content(start_time_text)
+
+        within("tr", text: start_time_text) do
+          expect(page).to have_link('削除',href: study_record_path(@study_record.id))
+
+          # 削除ボタンをクリックし、確認ダイアログでOKをクリックするとトップページに遷移し、学習時間記録が1減ることを確認する
+          expect{
+            accept_confirm "この学習記録を削除しますか？"do
+              find_link('削除',href: study_record_path(@study_record.id)).click
+            end
+            expect(page).to have_current_path(root_path)
+          }.to change { StudyRecord.count }.by(-1)
+        end
+      end
       # トップページには削除した学習時間記録の日付が表示されているカードが存在しないことを確認する
+      expect(page).to have_no_selector(".card-header",text: study_date_text)
     end
   end
 end
