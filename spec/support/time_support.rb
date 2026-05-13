@@ -24,4 +24,8 @@ module TimeSupport
   def build_end_clock_from(record)
     return record.end_time&.strftime("%H:%M") || ''
   end
+
+  def build_expected_start_time_value(record)
+    return record.start_time.strftime("%Y-%m-%dT%H:%M")
+  end
 end

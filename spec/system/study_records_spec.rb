@@ -33,7 +33,7 @@ RSpec.describe "学習時間登録", type: :system do
 
       within(".card", text: study_date) do
         expect(page).to have_content('学習時間')
-        expect(page).to have_content I18n.l(@study_record.start_time,format: :time)
+        expect(page).to have_content(I18n.l(@study_record.start_time,format: :time))
         expect(page).to have_content(I18n.l(end_time, format: :time))
         expect(page).to have_content(@study_record.study_memo)
       end
@@ -60,13 +60,49 @@ RSpec.describe '学習時間編集' do
   context '学習時間が編集できる時' do
     it '学習時間を登録したユーザーは編集できる' do
       # 学習時間を登録したユーザーでログインする
-      # 学習時間記録に編集ページへのリンクがあることを確認する
+      sign_in(@user)
+      # トップページには登録済みの学習時間記録の日付が表示されているカードが存在することを確認する
+      study_date = I18n.l(@study_record.start_time.to_date,format: :long)
+      expect(page).to have_selector(".card-header",text: study_date)
+      # 日付が表示されているカード内に学習時間記録の編集ページへのリンクがあることを確認する
+      within(".card", text: study_date) do
+        expect(page).to have_link('編集',href: edit_study_record_path(@study_record.id))
+      end
       # 編集ページへ遷移する
+      visit edit_study_record_path(@study_record.id)
       # 既に投稿済みの内容がフォームに入っていることを確認する
+      end_clock = build_end_clock_from(@study_record)
+      start_time_value = build_expected_start_time_value(@study_record)
+
+      expect(page).to have_field('学習開始日時',with: start_time_value)
+      expect(page).to have_field('学習終了時刻',with: end_clock)
+      expect(page).to have_field('学習内容',with: @study_record.study_memo)
       # 投稿内容を編集する
+      new_study_date = @study_record.start_time.to_date - 1.day
+      new_start_time = Time.zone.local(new_study_date.year, new_study_date.month, new_study_date.day, 9, 0)
+      new_end_clock = "15:00"
+      new_end_time = Time.zone.local(new_study_date.year, new_study_date.month, new_study_date.day, 15, 0)
+      new_study_memo = "テストメモ"
+
+      fill_in '学習開始日時', with: new_start_time
+      fill_in '学習終了時刻', with: new_end_clock
+      fill_in '学習内容', with: new_study_memo
       # 送信するとトップページに遷移し、StudyRecordモデルのカウントが変化しないことを確認する
+      expect{
+        click_button '更新する'
+        expect(page).to have_current_path(root_path)
+      }.to change { StudyRecord.count }.by(0)
       # トップページには先ほど編集した学習時間記録の日時が表示されているカードが存在することを確認する
+      study_date = I18n.l(new_study_date,format: :long)
+      expect(page).to have_selector(".card-header",text: study_date)
       # 日付が表示されているカード内に先ほど編集した学習時間記録の内容が表示されていることを確認する
+
+      within(".card", text: study_date) do
+        expect(page).to have_content('学習時間')
+        expect(page).to have_content(I18n.l(new_start_time,format: :time))
+        expect(page).to have_content(I18n.l(new_end_time, format: :time))
+        expect(page).to have_content new_study_memo
+      end
     end
   end
   context '学習時間が編集できない時' do
