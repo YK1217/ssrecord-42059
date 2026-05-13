@@ -96,7 +96,6 @@ RSpec.describe '学習時間編集' do
       study_date = I18n.l(new_study_date,format: :long)
       expect(page).to have_selector(".card-header",text: study_date)
       # 日付が表示されているカード内に先ほど編集した学習時間記録の内容が表示されていることを確認する
-
       within(".card", text: study_date) do
         expect(page).to have_content('学習時間')
         expect(page).to have_content(I18n.l(new_start_time,format: :time))
@@ -108,23 +107,49 @@ RSpec.describe '学習時間編集' do
   context '学習時間が編集できない時' do
     it '学習終了時間登録済みの学習時間記録を未完了に編集する事はできない' do
       # 学習時間を登録したユーザーでログインする
-      # 学習時間記録に編集ページへのリンクがあることを確認する
+      sign_in(@user)
+      # トップページには登録済みの学習時間記録の日付が表示されているカードが存在することを確認する
+      study_date = I18n.l(@study_record.start_time.to_date,format: :long)
+      expect(page).to have_selector(".card-header",text: study_date)
+      # 日付が表示されているカード内に学習時間記録の編集ページへのリンクがあることを確認する
+      within(".card", text: study_date) do
+        expect(page).to have_link('編集',href: edit_study_record_path(@study_record.id))
+      end
       # 編集ページへ遷移する
+      visit edit_study_record_path(@study_record.id)
       # 既に登録済みの内容がフォームに入っていることを確認する
+      end_clock = build_end_clock_from(@study_record)
+      start_time_value = build_expected_start_time_value(@study_record)
+
+      expect(page).to have_field('学習開始日時',with: start_time_value)
+      expect(page).to have_field('学習終了時刻',with: end_clock)
+      expect(page).to have_field('学習内容',with: @study_record.study_memo)
       # 学習終了時刻を削除する
+      fill_in '学習終了時刻', with: ''
       # 送信するとエラーが表示され、StudyRecordモデルのカウントが変化しないことを確認する
+      expect{
+        click_button '更新する'
+        expect(page).to have_selector('.alert-danger',text: "入力内容を確認してください")
+      }.to change { StudyRecord.count }.by(0)
       # 学習時間編集画面に戻される事を確認する
+      expect(page).to have_current_path(edit_study_record_path(@study_record.id))
     end
     it 'ログインしていないユーザーは編集できない' do
       # トップページに移動する
+      visit root_path
       # 自動的にログインページに遷移する事を確認する
+      expect(page).to have_current_path(new_user_session_path)
       # 学習時間記録が表示されていない事を確認する
+      expect(page).to have_no_content('学習時間')
     end
     it '学習時間を登録したユーザー以外のユーザーでは編集できない' do
       # 学習時間を登録したユーザーとは別のユーザーを用意する
+      another_user = FactoryBot.create(:user)
       # 別のユーザーでログインする
+      sign_in(another_user)
       # 学習時間記録が表示されていない事を確認する
+      study_date = I18n.l(@study_record.start_time.to_date,format: :long)
+      expect(page).to have_no_selector(".card-header",text: study_date)
     end
   end
-
 end
