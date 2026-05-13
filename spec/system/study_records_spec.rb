@@ -62,10 +62,10 @@ RSpec.describe '学習時間編集' do
       # 学習時間を登録したユーザーでログインする
       sign_in(@user)
       # トップページには登録済みの学習時間記録の日付が表示されているカードが存在することを確認する
-      study_date = I18n.l(@study_record.start_time.to_date,format: :long)
-      expect(page).to have_selector(".card-header",text: study_date)
+      study_date_text = I18n.l(@study_record.start_time.to_date,format: :long)
+      expect(page).to have_selector(".card-header",text: study_date_text)
       # 日付が表示されているカード内に学習時間記録の編集ページへのリンクがあることを確認する
-      within(".card", text: study_date) do
+      within(".card", text: study_date_text) do
         expect(page).to have_link('編集',href: edit_study_record_path(@study_record.id))
       end
       # 編集ページへ遷移する
@@ -93,10 +93,10 @@ RSpec.describe '学習時間編集' do
         expect(page).to have_current_path(root_path)
       }.to change { StudyRecord.count }.by(0)
       # トップページには先ほど編集した学習時間記録の日時が表示されているカードが存在することを確認する
-      study_date = I18n.l(new_study_date,format: :long)
-      expect(page).to have_selector(".card-header",text: study_date)
+      study_date_text = I18n.l(new_study_date,format: :long)
+      expect(page).to have_selector(".card-header",text: study_date_text)
       # 日付が表示されているカード内に先ほど編集した学習時間記録の内容が表示されていることを確認する
-      within(".card", text: study_date) do
+      within(".card", text: study_date_text) do
         expect(page).to have_content('学習時間')
         expect(page).to have_content(I18n.l(new_start_time,format: :time))
         expect(page).to have_content(I18n.l(new_end_time, format: :time))
@@ -109,10 +109,10 @@ RSpec.describe '学習時間編集' do
       # 学習時間を登録したユーザーでログインする
       sign_in(@user)
       # トップページには登録済みの学習時間記録の日付が表示されているカードが存在することを確認する
-      study_date = I18n.l(@study_record.start_time.to_date,format: :long)
-      expect(page).to have_selector(".card-header",text: study_date)
+      study_date_text = I18n.l(@study_record.start_time.to_date,format: :long)
+      expect(page).to have_selector(".card-header",text: study_date_text)
       # 日付が表示されているカード内に学習時間記録の編集ページへのリンクがあることを確認する
-      within(".card", text: study_date) do
+      within(".card", text: study_date_text) do
         expect(page).to have_link('編集',href: edit_study_record_path(@study_record.id))
       end
       # 編集ページへ遷移する
@@ -148,8 +148,25 @@ RSpec.describe '学習時間編集' do
       # 別のユーザーでログインする
       sign_in(another_user)
       # 学習時間記録が表示されていない事を確認する
-      study_date = I18n.l(@study_record.start_time.to_date,format: :long)
-      expect(page).to have_no_selector(".card-header",text: study_date)
+      study_date_text = I18n.l(@study_record.start_time.to_date,format: :long)
+      expect(page).to have_no_selector(".card-header",text: study_date_text)
+    end
+  end
+end
+
+RSpec.describe '学習時間削除' do
+  before do
+    @user = FactoryBot.create(:user)
+    @study_record = FactoryBot.create(:study_record,user: @user)
+  end
+
+  context '学習時間が削除できる時' do
+    it '学習時間を登録したユーザーは削除できる' do
+      # 学習時間を登録したユーザーでログインする
+      # トップページには登録済みの学習時間記録の日付が表示されているカードが存在することを確認する
+      # 日付が表示されているカード内に学習時間記録の開始時間が表示され、同じ行に削除ボタンがあることを確認する
+      # 削除ボタンをクリックし、確認ダイアログでOKをクリックするとトップページに遷移し、学習時間記録が1減ることを確認する
+      # トップページには削除した学習時間記録の日付が表示されているカードが存在しないことを確認する
     end
   end
 end
