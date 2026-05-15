@@ -175,6 +175,7 @@ RSpec.describe '学習時間削除' do
         expect(page).to have_content(start_time_text)
 
         within("tr", text: start_time_text) do
+          expect(page).to have_content('学習時間')
           expect(page).to have_link('削除',href: study_record_path(@study_record.id))
 
           # 削除ボタンをクリックし、確認ダイアログでOKをクリックするとトップページに遷移し、学習時間記録が1減ることを確認する
