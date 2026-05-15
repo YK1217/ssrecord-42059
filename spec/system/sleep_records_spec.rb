@@ -58,14 +58,47 @@ RSpec.describe '睡眠時間編集' do
   context '睡眠時間が編集できる時' do
     it '睡眠時間を登録したユーザーは編集できる' do
       # 睡眠時間を登録したユーザーでログインする
+      sign_in(@user)
       # トップページには登録済みの学習時間記録の日付(0:00～5:00の場合は前日)が表示されているカードが存在することを確認する
+      sleep_date_text = I18n.l((@sleep_record.start_time - 5.hour).to_date,format: :long)
+      expect(page).to have_selector(".card-header",text: sleep_date_text)
       # 日付が表示されているカード内に睡眠時間記録の編集ページへのリンクがあることを確認する
+      within(".card", text: sleep_date_text) do
+        expect(page).to have_link('編集',href: edit_sleep_record_path(@sleep_record.id))
+      end
       # 編集ページへ遷移する
+      visit edit_sleep_record_path(@sleep_record.id)
       # 既に投稿済みの内容がフォームに入っていることを確認する
+      end_clock = build_end_clock_from(@sleep_record)
+      start_time_value = build_expected_start_time_value(@sleep_record)
+
+      expect(page).to have_field('就寝日時',with: start_time_value)
+      expect(page).to have_field('起床時刻',with: end_clock)
       # 投稿内容を編集する
+      new_sleep_date = (@sleep_record.start_time - 5.hour).to_date - 1.day
+      new_start_time = Time.zone.local(new_sleep_date.year, new_sleep_date.month, new_sleep_date.day, 23, 0)
+      new_end_clock = Time.zone.parse("08:00")
+      new_end_date = new_sleep_date + 1.day
+      new_end_time = Time.zone.local(new_end_date.year, new_end_date.month, new_end_date.day, 8, 0)
+      new_sleep_time_text = "9時間0分"
+
+      fill_in '就寝日時', with: new_start_time
+      fill_in '起床時刻', with: new_end_clock
       # 送信するとトップページに遷移し、SleepRecordモデルのカウントが変化しないことを確認する
+      expect{
+        click_button '更新する'
+        expect(page).to have_current_path(root_path)
+      }.to change { SleepRecord.count }.by(0)
       # トップページには先ほど編集した睡眠時間記録の日時が表示されているカードが存在することを確認する
+      sleep_date_text = I18n.l(new_sleep_date,format: :long)
+      expect(page).to have_selector(".card-header",text: sleep_date_text)
       # 日付が表示されているカード内に先ほど編集した睡眠時間記録の内容が表示されていることを確認する
+      within(".card", text: sleep_date_text) do
+        expect(page).to have_content('睡眠時間')
+        expect(page).to have_content(I18n.l(new_start_time,format: :time))
+        expect(page).to have_content(I18n.l(new_end_time, format: :time))
+        expect(page).to have_content new_sleep_time_text
+      end
     end
   end
   context '睡眠時間が編集できない時' do
