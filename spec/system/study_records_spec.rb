@@ -193,13 +193,19 @@ RSpec.describe '学習時間削除' do
   context '学習時間が削除できない時' do
     it 'ログインしていないユーザーは削除できない' do
       # トップページに移動する
+      visit root_path
       # 自動的にログインページに遷移することを確認する
+      expect(page).to have_current_path(new_user_session_path)
       # 学習時間の削除ボタンが表示されていないことを確認する
+      expect(page).to have_no_link('削除',href: study_record_path(@study_record.id))
     end
     it '学習時間を登録したユーザー以外のユーザーでは削除できない' do
       # 学習時間を登録したユーザーとは別のユーザーを用意する
+      another_user = FactoryBot.create(:user)
       # 別のユーザーでログインする
+      sign_in(another_user)
       # 学習時間の削除ボタンが表示されていないことを確認する
+      expect(page).to have_no_link('削除',href: study_record_path(@study_record.id))
     end
   end
 end
