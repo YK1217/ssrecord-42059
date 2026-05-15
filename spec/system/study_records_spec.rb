@@ -145,6 +145,7 @@ RSpec.describe '学習時間編集' do
       expect(page).to have_current_path(new_user_session_path)
       # 学習時間記録が表示されていない事を確認する
       expect(page).to have_no_content('学習時間')
+      expect(page).to have_no_link('編集',href: edit_study_record_path(@study_record.id))
     end
     it '学習時間を登録したユーザー以外のユーザーでは編集できない' do
       # 学習時間を登録したユーザーとは別のユーザーを用意する
@@ -154,6 +155,7 @@ RSpec.describe '学習時間編集' do
       # 学習時間記録が表示されていない事を確認する
       study_date_text = I18n.l(@study_record.start_time.to_date,format: :long)
       expect(page).to have_no_selector(".card-header",text: study_date_text)
+      expect(page).to have_no_link('編集',href: edit_study_record_path(@study_record.id))
     end
   end
 end

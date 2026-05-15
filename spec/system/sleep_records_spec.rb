@@ -104,23 +104,50 @@ RSpec.describe '睡眠時間編集' do
   context '睡眠時間が編集できない時' do
     it '起床時間登録済みの睡眠記録を未完了に編集する事はできない' do
       # 睡眠時間を登録したユーザーでログインする
+      sign_in(@user)
       # トップページには登録済みの睡眠時間記録の日付(0:00～5:00の場合は前日)が表示されているカードが存在することを確認する
+      sleep_date_text = I18n.l((@sleep_record.start_time - 5.hour).to_date,format: :long)
+      expect(page).to have_selector(".card-header",text: sleep_date_text)
       # 日付が表示されているカード内に睡眠時間記録の編集ページへのリンクがあることを確認する
+      within(".card", text: sleep_date_text) do
+        expect(page).to have_link('編集',href: edit_sleep_record_path(@sleep_record.id))
+      end
       # 編集ページへ遷移する
+      visit edit_sleep_record_path(@sleep_record.id)
       # 既に登録済みの内容がフォームに入っていることを確認する
+      end_clock = build_end_clock_from(@sleep_record)
+      start_time_value = build_expected_start_time_value(@sleep_record)
+
+      expect(page).to have_field('就寝日時',with: start_time_value)
+      expect(page).to have_field('起床時刻',with: end_clock)
       # 起床時刻を削除する
+      fill_in '起床時刻', with: ''
       # 送信するとエラーが表示され、SleepRecordモデルのカウントが変化しないことを確認する
+      expect{
+        click_button '更新する'
+        expect(page).to have_selector('.alert-danger',text: "入力内容を確認してください")
+      }.to change { SleepRecord.count }.by(0)
       # 睡眠時間編集画面に戻される事を確認する
+      expect(page).to have_current_path(edit_sleep_record_path(@sleep_record.id))
     end
     it 'ログインしていないユーザーは編集できない' do
       # トップページに移動する
+      visit root_path
       # 自動的にログインページに遷移する事を確認する
+      expect(page).to have_current_path(new_user_session_path)
       # 睡眠時間記録が表示されていない事を確認する
+      expect(page).to have_no_content('睡眠時間')
+      expect(page).to have_no_link('編集',href: edit_sleep_record_path(@sleep_record.id))
     end
     it '睡眠時間を登録したユーザー以外のユーザーでは編集できない' do
       # 睡眠時間を登録したユーザーとは別のユーザーを用意する
+      another_user = FactoryBot.create(:user)
       # 別のユーザーでログインする
+      sign_in(another_user)
       # 睡眠時間記録が表示されていない事を確認する
+      sleep_date_text = I18n.l((@sleep_record.start_time - 5.hour).to_date,format: :long)
+      expect(page).to have_no_selector(".card-header",text: sleep_date_text)
+      expect(page).to have_no_link('編集',href: edit_sleep_record_path(@sleep_record.id))
     end
   end
 end
