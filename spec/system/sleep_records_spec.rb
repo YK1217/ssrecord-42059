@@ -40,8 +40,11 @@ RSpec.describe "睡眠時間登録", type: :system do
   context '睡眠時間が登録できない時' do
     it 'ログインしていないユーザーは登録できない' do
       # トップページに移動する
+      visit root_path
       # 自動的にログインページに遷移する事を確認する
+      expect(page).to have_current_path(new_user_session_path)
       # 睡眠時間登録ページが表示されていない事を確認する
+      expect(page).to have_no_content('睡眠時間登録')
     end
   end
 end
