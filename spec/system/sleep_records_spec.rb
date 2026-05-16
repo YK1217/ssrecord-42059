@@ -192,13 +192,19 @@ RSpec.describe '睡眠時間削除' do
   context '睡眠時間が削除できない時' do
     it 'ログインしていないユーザーは削除できない' do
       # トップページに移動する
+      visit root_path
       # 自動的にログインページに遷移することを確認する
+      expect(page).to have_current_path(new_user_session_path)
       # 削除ボタンが表示されていない事を確認する
+      expect(page).to have_no_link('削除',href: sleep_record_path(@sleep_record.id))
     end
     it '睡眠時間を登録したユーザー以外のユーザーでは削除できない' do
       # 睡眠時間を登録したユーザーとは別のユーザーを用意する
+      another_user = FactoryBot.create(:user)
       # 別のユーザーでログインする
+      sign_in(another_user)
       # 削除ボタンが表示されていない事を確認する
+      expect(page).to have_no_link('削除',href: sleep_record_path(@sleep_record.id))
     end
   end
 end
