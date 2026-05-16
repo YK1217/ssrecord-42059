@@ -178,15 +178,17 @@ RSpec.describe '学習時間削除' do
           expect(page).to have_content('学習時間')
           expect(page).to have_link('削除',href: study_record_path(@study_record.id))
 
-          # 削除ボタンをクリックし、確認ダイアログでOKをクリックするとトップページに遷移し、学習時間記録が1減ることを確認する
-          expect{
-            accept_confirm "この学習記録を削除しますか？"do
-              find_link('削除',href: study_record_path(@study_record.id)).click
-            end
-            expect(page).to have_current_path(root_path)
-          }.to change { StudyRecord.count }.by(-1)
         end
       end
+
+      # 削除ボタンをクリックし、確認ダイアログでOKをクリックするとトップページに遷移し、学習時間記録が1減ることを確認する
+      expect{
+        accept_confirm "この学習記録を削除しますか？"do
+          find_link('削除',href: study_record_path(@study_record.id)).click
+        end
+        expect(page).to have_current_path(root_path)
+        expect(page).to have_selector(".alert-success",text: "学習時間を削除しました")
+      }.to change { StudyRecord.count }.by(-1)
       # トップページには削除した学習時間記録の日付が表示されているカードが存在しないことを確認する
       expect(page).to have_no_selector(".card-header",text: study_date_text)
     end
