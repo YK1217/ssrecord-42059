@@ -161,10 +161,32 @@ RSpec.describe '睡眠時間削除' do
   context '睡眠時間が削除できる時' do
     it '睡眠時間を登録したユーザーは削除できる' do
       # 睡眠時間を登録したユーザーでログインする
+      sign_in(@user)
       # トップページには登録済みの睡眠時間記録の日付(0:00～5:00の場合は前日)が表示されているカードが存在することを確認する
+      sleep_date_text = I18n.l((@sleep_record.start_time - 5.hour).to_date,format: :long)
+      expect(page).to have_selector(".card-header",text: sleep_date_text)
       # 日付が表示されているカード内に睡眠時間記録の就寝時間が表示され、同じ行に削除ボタンがあることを確認する
+      start_time_text = I18n.l(@sleep_record.start_time,format: :time)
+
+      within(".card", text: sleep_date_text) do
+        expect(page).to have_content(start_time_text)
+
+        within("tr", text: start_time_text) do
+          expect(page).to have_link('削除',href: sleep_record_path(@sleep_record.id))
+
+        end
+      end
+
       # 削除ボタンをクリックし、確認ダイアログでOKをクリックするとトップページに遷移し、学習時間が1減ることを確認する
+      expect{
+        accept_confirm "この睡眠記録を削除しますか？"do
+          find_link('削除',href: sleep_record_path(@sleep_record.id)).click
+        end
+          expect(page).to have_current_path(root_path)
+          expect(page).to have_selector(".alert-success",text: "睡眠時間を削除しました")
+      }.to change { SleepRecord.count }.by(-1)
       # トップページには削除した睡眠時間記録の日付が表示されているカードが存在しないことを確認する
+      expect(page).to have_no_selector(".card-header",text: sleep_date_text)
     end
   end
   context '睡眠時間が削除できない時' do
