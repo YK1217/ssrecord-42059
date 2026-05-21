@@ -1,24 +1,29 @@
-# README
+# アプリケーション名
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+SSRecord
 
-Things you may want to cover:
+# アプリケーション概要
 
-* Ruby version
+睡眠時間と学習時間を記録し、日別・週別に振り返ることで、生活リズムの改善を支援する
 
-* System dependencies
+# URL
 
-* Configuration
+https://ssrecord-42059-rails7-user-id.onrender.com/
 
-* Database creation
+# 利用方法
 
-* Database initialization
+## 睡眠・学習時間記録
 
-* How to run the test suite
+1. ログイン画面からログインする。ユーザー登録していない場合はログイン画面から新規登録画面にアクセスし、ユーザー新規登録を行う
+2. ログイン中に表示されるヘッダーから睡眠時間または学習時間登録画面にアクセスする
+3. 就寝時・学習開始時の日時を登録する
+4. 起床・学習終了した際には日別一覧画面から就寝・学習開始時の記録のカードの編集ボタンをクリックし、編集画面にアクセスして起床・学習終了時刻を登録する
 
-* Services (job queues, cache servers, search engines, etc.)
+### 備考
 
-* Deployment instructions
-
-* ...
+- 学習時間記録に関しては開始日時と終了時刻に加え、学習内容のメモを記録できる
+- 学習時間記録および睡眠時間記録はそれぞれ1日に1件までしか登録できない
+- 睡眠時間記録は就寝時刻が0:00～5:00の場合、前日の記録として扱う
+- 学習時間記録の開始日時および終了時刻は9:00～18:00の範囲で登録しなければならない
+- 睡眠時間記録は起床時刻を登録する場合、睡眠時間が30分以上14時間以下となるように登録しなければならない
+- 学習時間記録および睡眠時間記録はそれぞれ学習終了時刻と起床時刻が登録済みの場合、未登録の状態に変更することはできない
