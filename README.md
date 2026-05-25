@@ -42,6 +42,7 @@ https://ssrecord-42059-rails7-user-id.onrender.com/
 - カレンダー表示およびカレンダーから選択する形式での特定日付に絞った日別表示機能
 - 週間集計画面における睡眠時間と学習時間のグラフ表示
 - 同一日付における複数の学習時間記録の登録機能
+- 前日の学習時間記録と睡眠時間記録が未登録・未完了の場合に通知するよう設定できるリマインダー機能
 
 # データベース設計
 
@@ -50,3 +51,39 @@ https://ssrecord-42059-rails7-user-id.onrender.com/
 # 画面遷移図
 
 ![画面遷移図](docs/dataflow.png)
+
+# 開発環境
+
+## 使用技術
+
+- RUby 3.2.x
+- Ruby on Rails 7.1.x
+- MySQL 8.0.x
+- PostgreSQL 14.x
+- HTML
+- SCSS
+- JavaScript
+- Bootstrap 5.3.x
+
+### 補足
+
+- データベースは開発・テスト環境ではMySQLを使用し、本番環境ではPostgreSQLを使用する
+- デプロイ先のレンダリングサービスがPostgreSQLを使用しているため
+- データベースの違いによる影響を最小限にするため、MySQLとPostgreSQLの両方で動作確認を行う
+
+## 開発環境
+
+- WSL2 (Ubuntu 24.04.4 LTS)
+- Visual Studio Code
+- Git / GitHub
+- Render
+
+## 使用gem
+
+- devise
+- dartsass-rails
+- bootstrap
+- rspec-rails
+- factory_bot_rails
+- faker
+- rails-i18n
