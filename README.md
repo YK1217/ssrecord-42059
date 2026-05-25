@@ -87,3 +87,51 @@ https://ssrecord-42059-rails7-user-id.onrender.com/
 - factory_bot_rails
 - faker
 - rails-i18n
+
+# ローカルでの動作方法
+
+1. GitHubからリポジトリをクローンする
+
+```bash
+git clone https://github.com/YK1217/ssrecord-42059.git
+```
+
+2. ターミナルでプロジェクトのルートディレクトリに移動する
+
+```bash
+cd ssrecord-42059
+```
+
+3. 必要なgemおよびJavaScriptパッケージをインストールする
+
+```bash
+bundle install
+yarn install
+```
+
+4. データベースを作成してマイグレーションを行い、初期データを投入する
+
+```bash
+rails db:create
+rails db:migrate
+rails db:seed
+```
+
+5. ローカルサーバーを起動する
+
+```bash
+bin/dev
+```
+
+6. ブラウザで http://localhost:3000 にアクセスする
+
+## 補足
+
+- bootstrapおよびdartsass-railsを使用しているため、ローカルサーバーは`bin/dev`コマンドで起動する必要がある
+
+## テストコードの実行コマンド
+
+```bash
+bundle exec rspec spec/models
+bundle exec rspec spec/system
+```
