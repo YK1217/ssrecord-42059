@@ -143,7 +143,15 @@ bundle install
 yarn install
 ```
 
-4. データベースを作成してマイグレーションを行い、初期データを投入する
+4. 環境変数を設定する
+
+```bash
+export BASIC_DB_USER="MySQLのユーザー名"
+export BASIC_DB_PASSWORD="MySQLのパスワード"
+export TEST_PASSWORD="テストログイン用ユーザーのパスワード"
+```
+
+5. データベースを作成してマイグレーションを行い、初期データを投入する
 
 ```bash
 rails db:create
@@ -151,17 +159,24 @@ rails db:migrate
 rails db:seed
 ```
 
-5. ローカルサーバーを起動する
+`rails db:seed`を実行すると、以下のテストログイン用ユーザーが作成される。
+
+メールアドレス: test@example.ne.jp<br>
+パスワード: TEST_PASSWORDに設定した値
+
+6. ローカルサーバーを起動する
 
 ```bash
 bin/dev
 ```
 
-6. ブラウザで http://localhost:3000 にアクセスする
+7. ブラウザで http://localhost:3000 にアクセスする
 
 ## 補足
 
 - bootstrapおよびdartsass-railsを使用しているため、ローカルサーバーは`bin/dev`コマンドで起動する必要がある
+- `TEST_PASSWORD`を設定せずに`rails db:seed`を実行すると、テストログイン用ユーザーの作成に失敗する。
+- また、`TEST_PASSWORD`は英数字を各1文字以上含む8文字以上の値に設定する必要がある。これらの条件を満たさない値を`TEST_PASSWORD`に設定している場合も、テストログイン用ユーザーの作成に失敗する。
 
 ## テストコードの実行コマンド
 
