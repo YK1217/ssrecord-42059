@@ -95,10 +95,19 @@ RSpec.describe "SleepRecords", type: :request do
       end
     end
     context 'ログインしていない場合' do
+        let(:valid_params) do
+          {
+            sleep_record: attributes_for(:sleep_record, user_id: user.id)
+          }
+        end
       it 'createアクションにリクエストしてもSleepRecordの数は増えない' do
-
+        expect {
+          post sleep_records_path, params: valid_params
+        }.not_to change(SleepRecord, :count)
       end
       it 'createアクションにリクエストするとログインページにリダイレクトされる' do
+        post sleep_records_path, params: valid_params
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
