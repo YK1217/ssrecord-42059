@@ -11,7 +11,8 @@ RSpec.describe "SleepRecords", type: :request do
       end
 
       it 'newアクションにリクエストすると正常にレスポンスが返ってくる' do
-        expect(response.status).to eq(200)
+        # expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
       it 'newアクションにリクエストすると睡眠時間登録フォームが表示される' do
         expect(response.body).to include("睡眠時間登録")
@@ -30,7 +31,8 @@ RSpec.describe "SleepRecords", type: :request do
       end
 
       it 'newアクションにリクエストするとログインページにリダイレクトされる' do
-        expect(response.status).to eq(302)
+        # expect(response.status).to eq(302)
+        expect(response).to have_http_status(:found)
         expect(response).to redirect_to(new_user_session_path)
       end
     end
@@ -77,12 +79,18 @@ RSpec.describe "SleepRecords", type: :request do
         end
 
         it 'createアクションにリクエストしてもSleepRecordの数は増えない' do
-
+          expect {
+            post sleep_records_path, params: invalid_params
+          }.not_to change(SleepRecord, :count)
         end
         it 'createアクションにリクエストするとnewテンプレートが再表示される' do
-
+          post sleep_records_path, params: invalid_params
+          expect(response.body).to include("睡眠時間登録")
+          expect(response.body).to include("<form")
         end
         it 'createアクションにリクエストするとunprocessable_contentのステータスコードが返ってくる' do
+          post sleep_records_path, params: invalid_params
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end
