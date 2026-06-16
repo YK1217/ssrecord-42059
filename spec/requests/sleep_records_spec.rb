@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe "SleepRecords", type: :request do
   let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
+  let(:sleep_record) { create(:sleep_record, user: user) }
+  let(:other_sleep_record) { create(:sleep_record, user: other_user) }
 
   describe "GET #new" do
     context 'ログインしている場合' do
@@ -108,6 +111,32 @@ RSpec.describe "SleepRecords", type: :request do
       it 'createアクションにリクエストするとログインページにリダイレクトされる' do
         post sleep_records_path, params: valid_params
         expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+  describe 'GET #edit' do
+    context 'ログインしている場合' do
+      before do
+        sign_in user
+        get edit_sleep_record_path(sleep_record)
+      end
+
+      it '自分の睡眠記録のeditアクションにリクエストすると正常にレスポンスが返ってくる' do
+
+      end
+      it 'editアクションにリクエストすると睡眠時間編集フォームが表示される' do
+
+      end
+      it 'editアクションにリクエストすると登録済みの就寝日時が表示される' do
+      end
+      it 'editアクションにリクエストすると登録済みの起床時刻が表示される' do
+      end
+      it '他ユーザーの睡眠記録のeditアクションにリクエストするとアクセスできない' do
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'editアクションにリクエストするとログインページにリダイレクトされる' do
       end
     end
   end
