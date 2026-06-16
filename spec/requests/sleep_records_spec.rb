@@ -6,6 +6,10 @@ RSpec.describe "SleepRecords", type: :request do
   let(:sleep_record) { create(:sleep_record, user: user) }
   let(:other_sleep_record) { create(:sleep_record, user: other_user) }
 
+  def build_expected_start_time_local_value(record)
+    record.start_time.localtime.strftime("%Y-%m-%dT%H:%M:%S")
+  end
+
   describe "GET #new" do
     context 'ログインしている場合' do
       before do
@@ -18,8 +22,10 @@ RSpec.describe "SleepRecords", type: :request do
         expect(response).to have_http_status(:ok)
       end
       it 'newアクションにリクエストすると睡眠時間登録フォームが表示される' do
-        expect(response.body).to include("睡眠時間登録")
-        expect(response.body).to include("<form")
+        html = Nokogiri::HTML(response.body)
+
+        expect(html.at_css('h1').text).to include("睡眠時間登録")
+        expect(html.at_css('form')).to be_present
       end
       it 'newアクションにリクエストすると就寝日時の入力欄が表示される' do
         expect(response.body).to include("就寝日時")
@@ -88,8 +94,10 @@ RSpec.describe "SleepRecords", type: :request do
         end
         it 'createアクションにリクエストするとnewテンプレートが再表示される' do
           post sleep_records_path, params: invalid_params
-          expect(response.body).to include("睡眠時間登録")
-          expect(response.body).to include("<form")
+
+          html = Nokogiri::HTML(response.body)
+          expect(html.at_css('h1').text).to include("睡眠時間登録")
+          expect(html.at_css('form')).to be_present
         end
         it 'createアクションにリクエストするとunprocessable_contentのステータスコードが返ってくる' do
           post sleep_records_path, params: invalid_params
@@ -122,21 +130,32 @@ RSpec.describe "SleepRecords", type: :request do
       end
 
       it '自分の睡眠記録のeditアクションにリクエストすると正常にレスポンスが返ってくる' do
-
+        expect(response).to have_http_status(:ok)
       end
       it 'editアクションにリクエストすると睡眠時間編集フォームが表示される' do
-
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css('h1').text).to include("睡眠時間編集")
       end
       it 'editアクションにリクエストすると登録済みの就寝日時が表示される' do
+        html = Nokogiri::HTML(response.body)
+        start_time_value = build_expected_start_time_local_value(sleep_record)
+        expect(html.at_css('input[name="sleep_record[start_time]"]')['value']).to eq(start_time_value)
       end
       it 'editアクションにリクエストすると登録済みの起床時刻が表示される' do
+        html = Nokogiri::HTML(response.body)
+        end_clock_value = build_end_clock_from(sleep_record)
+        expect(html.at_css('input[name="sleep_record[end_clock]"]')['value']).to eq(end_clock_value)
       end
       it '他ユーザーの睡眠記録のeditアクションにリクエストするとアクセスできない' do
+        get edit_sleep_record_path(other_sleep_record)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
     context 'ログインしていない場合' do
       it 'editアクションにリクエストするとログインページにリダイレクトされる' do
+        get edit_sleep_record_path(sleep_record)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
