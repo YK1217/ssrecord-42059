@@ -159,4 +159,43 @@ RSpec.describe "SleepRecords", type: :request do
       end
     end
   end
+
+  describe 'PATCH #update' do
+    context 'ログインしている場合' do
+      before do
+        sign_in user
+      end
+
+      context '更新できる値の場合' do
+        it 'updateアクションにリクエストすると睡眠記録が更新される' do
+        end
+        it 'updateアクションにリクエストするとトップページにリダイレクトされる' do
+        end
+        it 'updateアクションにリクエストすると睡眠時間を更新しましたというメッセージが表示される' do
+        end
+      end
+
+      context '更新できない値の場合' do
+        it 'updateアクションにリクエストしても睡眠記録は更新されない' do
+        end
+        it 'updateアクションにリクエストするとeditテンプレートが再表示される' do
+        end
+        it 'updateアクションにリクエストするとunprocessable_contentのステータスコードが返ってくる' do
+        end
+      end
+
+      context '他ユーザーの睡眠記録の場合' do
+        it 'updateアクションにリクエストしても睡眠記録は更新されない' do
+        end
+        it 'updateアクションにリクエストするとアクセスできない' do
+        end
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'updateアクションにリクエストするとログイン画面へリダイレクトされる' do
+
+      end
+    end
+  end
 end
