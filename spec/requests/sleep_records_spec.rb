@@ -270,16 +270,27 @@ RSpec.describe "SleepRecords", type: :request do
       end
 
       it '他ユーザーの睡眠記録は削除できない' do
-        delete sleep_record_path(other_sleep_record)
-        expect(response).to have_http_status(:not_found)
+        other_sleep_record
+        expect{
+          delete sleep_record_path(other_sleep_record)
+        }.not_to change(SleepRecord, :count)
       end
     end
 
     context 'ログインしていない場合' do
+      before do
+        sleep_record
+      end
+
       it 'destroyアクションにリクエストしてもSleepRecordの数は減らない' do
+        expect{
+          delete sleep_record_path(sleep_record)
+      }.to change(SleepRecord, :count).by(0)
       end
 
       it 'destroyアクションにリクエストするとログイン画面へリダイレクトされる' do
+        delete sleep_record_path(sleep_record)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
