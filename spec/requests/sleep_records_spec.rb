@@ -244,4 +244,32 @@ RSpec.describe "SleepRecords", type: :request do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    context 'ログインしている場合' do
+      before do
+        sign_in user
+      end
+
+      it 'destroyアクションにリクエストすると自分のSleepRecordの数が1減る' do
+      end
+
+      it 'destroyアクションにリクエストするとトップページへリダイレクトされる' do
+      end
+
+      it 'destroyアクションにリクエストすると睡眠時間を削除しましたというメッセージが表示される' do
+      end
+
+      it '他ユーザーの睡眠記録は削除できない' do
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'destroyアクションにリクエストしてもSleepRecordの数は減らない' do
+      end
+
+      it 'destroyアクションにリクエストするとログイン画面へリダイレクトされる' do
+      end
+    end
+  end
 end
