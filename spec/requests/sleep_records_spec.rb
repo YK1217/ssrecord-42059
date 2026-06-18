@@ -167,34 +167,80 @@ RSpec.describe "SleepRecords", type: :request do
       end
 
       context '更新できる値の場合' do
+
+        let(:valid_params) do
+          {
+            sleep_record: attributes_for(:sleep_record, user_id: user.id)
+        }
+        end
+
         it 'updateアクションにリクエストすると睡眠記録が更新される' do
+          patch sleep_record_path(sleep_record), params: valid_params
+          expect(sleep_record.reload.start_time).to eq(valid_params[:sleep_record][:start_time])
         end
         it 'updateアクションにリクエストするとトップページにリダイレクトされる' do
+          patch sleep_record_path(sleep_record), params: valid_params
+          expect(response).to redirect_to(root_path)
         end
         it 'updateアクションにリクエストすると睡眠時間を更新しましたというメッセージが表示される' do
+          patch sleep_record_path(sleep_record), params: valid_params
+          follow_redirect!
+          expect(response.body).to include("睡眠時間を更新しました")
         end
       end
 
       context '更新できない値の場合' do
+
+          let(:invalid_params) do
+            {
+              sleep_record: attributes_for(:sleep_record, user_id: user.id, start_time: nil)
+            }
+          end
+
         it 'updateアクションにリクエストしても睡眠記録は更新されない' do
+          original_start_time = sleep_record.start_time
+          patch sleep_record_path(sleep_record), params: invalid_params
+          expect(sleep_record.reload.start_time).to eq(original_start_time)
         end
         it 'updateアクションにリクエストするとeditテンプレートが再表示される' do
+          patch sleep_record_path(sleep_record), params: invalid_params
+          html = Nokogiri::HTML(response.body)
+          expect(html.at_css('h1').text).to include("睡眠時間編集")
+          expect(html.at_css('form')).to be_present
         end
         it 'updateアクションにリクエストするとunprocessable_contentのステータスコードが返ってくる' do
+          patch sleep_record_path(sleep_record), params: invalid_params
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
 
       context '他ユーザーの睡眠記録の場合' do
+          let(:valid_params) do
+            {
+              sleep_record: attributes_for(:sleep_record, user_id: other_user.id)
+            }
+          end
         it 'updateアクションにリクエストしても睡眠記録は更新されない' do
+          original_start_time = other_sleep_record.start_time
+          patch sleep_record_path(other_sleep_record)
+          expect(other_sleep_record.reload.start_time).to eq(original_start_time)
         end
         it 'updateアクションにリクエストするとアクセスできない' do
+          patch sleep_record_path(other_sleep_record), params: valid_params
+          expect(response).to have_http_status(:not_found)
         end
       end
     end
 
     context 'ログインしていない場合' do
+      let(:valid_params) do
+        {
+          sleep_record: attributes_for(:sleep_record, user_id: user.id)
+        }
+      end
       it 'updateアクションにリクエストするとログイン画面へリダイレクトされる' do
-
+        patch sleep_record_path(sleep_record), params: valid_params
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
