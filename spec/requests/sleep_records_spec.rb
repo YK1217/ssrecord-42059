@@ -249,18 +249,29 @@ RSpec.describe "SleepRecords", type: :request do
     context 'ログインしている場合' do
       before do
         sign_in user
+        sleep_record
       end
 
       it 'destroyアクションにリクエストすると自分のSleepRecordの数が1減る' do
+        expect {
+          delete sleep_record_path(sleep_record)
+        }.to change(SleepRecord, :count).by(-1)
       end
 
       it 'destroyアクションにリクエストするとトップページへリダイレクトされる' do
+        delete sleep_record_path(sleep_record)
+        expect(response).to redirect_to(root_path)
       end
 
       it 'destroyアクションにリクエストすると睡眠時間を削除しましたというメッセージが表示される' do
+        delete sleep_record_path(sleep_record)
+        follow_redirect!
+        expect(response.body).to include("睡眠時間を削除しました")
       end
 
       it '他ユーザーの睡眠記録は削除できない' do
+        delete sleep_record_path(other_sleep_record)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
