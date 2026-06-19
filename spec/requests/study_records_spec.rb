@@ -48,15 +48,33 @@ RSpec.describe "StudyRecords", type: :request do
       end
 
       context '保存できる値の場合' do
+        let(:valid_params) do
+          {
+            study_record: attributes_for(:study_record, user: user)
+          }
+        end
+
         it 'createアクションにリクエストするとStudyRecordの数が1増える' do
+          expect {
+            post study_records_path, params: valid_params
+          }.to change(StudyRecord, :count).by(1)
         end
         it 'createアクションにリクエストするとトップページへリダイレクトされる' do
+          post study_records_path, params: valid_params
+          expect(response).to redirect_to(root_path)
         end
         it 'createアクションにリクエストすると学習時間を登録しましたというメッセージが表示される' do
+          post study_records_path, params: valid_params
+          follow_redirect!
+          expect(response.body).to include("学習時間を登録しました")
         end
         it '作成された学習記録はログイン中のユーザーに紐づく' do
+          post study_records_path, params: valid_params
+          expect(StudyRecord.last.user_id).to eq(user.id)
         end
         it '作成された学習記録に学習メモが保存される' do
+          post study_records_path, params: valid_params
+          expect(StudyRecord.last.study_memo).to eq(valid_params[:study_record][:study_memo])
         end
       end
 
