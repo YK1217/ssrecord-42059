@@ -40,4 +40,42 @@ RSpec.describe "StudyRecords", type: :request do
       end
     end
   end
+
+  describe 'POST #create' do
+    context 'ログインしている場合' do
+      before do
+        sign_in user
+      end
+
+      context '保存できる値の場合' do
+        it 'createアクションにリクエストするとStudyRecordの数が1増える' do
+        end
+        it 'createアクションにリクエストするとトップページへリダイレクトされる' do
+        end
+        it 'createアクションにリクエストすると学習時間を登録しましたというメッセージが表示される' do
+        end
+        it '作成された学習記録はログイン中のユーザーに紐づく' do
+        end
+        it '作成された学習記録に学習メモが保存される' do
+        end
+      end
+
+      context '保存できない値の場合' do
+        it 'createアクションにリクエストしてもStudyRecordの数は増えない' do
+        end
+        it 'createアクションにリクエストするとnewテンプレートが再表示される' do
+        end
+        it 'createアクションにリクエストするとunprocessable_contentのステータスが返る' do
+        end
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'createアクションにリクエストしてもStudyRecordの数は増えない' do
+      end
+
+      it 'createアクションにリクエストするとログイン画面へリダイレクトされる' do
+      end
+    end
+  end
 end

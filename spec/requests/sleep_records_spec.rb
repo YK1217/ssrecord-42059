@@ -56,7 +56,7 @@ RSpec.describe "SleepRecords", type: :request do
       context '保存できる値の場合' do
         let(:valid_params) do
           {
-            sleep_record: attributes_for(:sleep_record, user_id: user.id)
+            sleep_record: attributes_for(:sleep_record, user: user)
           }
         end
 
@@ -83,7 +83,7 @@ RSpec.describe "SleepRecords", type: :request do
       context '保存できない値の場合' do
         let(:invalid_params) do
           {
-            sleep_record: attributes_for(:sleep_record, user_id: user.id, start_time: nil)
+            sleep_record: attributes_for(:sleep_record, user: user, start_time: nil)
           }
         end
 
@@ -108,7 +108,7 @@ RSpec.describe "SleepRecords", type: :request do
     context 'ログインしていない場合' do
         let(:valid_params) do
           {
-            sleep_record: attributes_for(:sleep_record, user_id: user.id)
+            sleep_record: attributes_for(:sleep_record, user: user)
           }
         end
       it 'createアクションにリクエストしてもSleepRecordの数は増えない' do
@@ -170,7 +170,7 @@ RSpec.describe "SleepRecords", type: :request do
 
         let(:valid_params) do
           {
-            sleep_record: attributes_for(:sleep_record, user_id: user.id)
+            sleep_record: attributes_for(:sleep_record, user: user)
         }
         end
 
@@ -193,7 +193,7 @@ RSpec.describe "SleepRecords", type: :request do
 
           let(:invalid_params) do
             {
-              sleep_record: attributes_for(:sleep_record, user_id: user.id, start_time: nil)
+              sleep_record: attributes_for(:sleep_record, user: user, start_time: nil)
             }
           end
 
@@ -217,7 +217,7 @@ RSpec.describe "SleepRecords", type: :request do
       context '他ユーザーの睡眠記録の場合' do
           let(:valid_params) do
             {
-              sleep_record: attributes_for(:sleep_record, user_id: other_user.id)
+              sleep_record: attributes_for(:sleep_record, user: other_user)
             }
           end
         it 'updateアクションにリクエストしても睡眠記録は更新されない' do
@@ -235,7 +235,7 @@ RSpec.describe "SleepRecords", type: :request do
     context 'ログインしていない場合' do
       let(:valid_params) do
         {
-          sleep_record: attributes_for(:sleep_record, user_id: user.id)
+          sleep_record: attributes_for(:sleep_record, user: user)
         }
       end
       it 'updateアクションにリクエストするとログイン画面へリダイレクトされる' do
