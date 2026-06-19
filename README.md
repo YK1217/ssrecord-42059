@@ -249,6 +249,7 @@ bin/dev
 
 ```bash
 bundle exec rspec spec/models
+bundle exec rspec spec/requests
 bundle exec rspec spec/system
 ```
 
