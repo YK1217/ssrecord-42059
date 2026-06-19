@@ -31,7 +31,12 @@ RSpec.describe "StudyRecords", type: :request do
     end
 
     context 'ログインしていない場合' do
+      before do
+        get new_study_record_path
+      end
+
       it 'newアクションにリクエストするとログイン画面へリダイレクトされる' do
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
