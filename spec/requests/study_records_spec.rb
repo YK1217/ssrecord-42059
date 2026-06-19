@@ -79,11 +79,27 @@ RSpec.describe "StudyRecords", type: :request do
       end
 
       context '保存できない値の場合' do
+        let(:invalid_params) do
+          {
+            study_record: attributes_for(:study_record, user: user, start_time: nil)
+          }
+        end
+
         it 'createアクションにリクエストしてもStudyRecordの数は増えない' do
+          expect {
+            post study_records_path, params: invalid_params
+          }.not_to change(StudyRecord, :count)
         end
         it 'createアクションにリクエストするとnewテンプレートが再表示される' do
+          post study_records_path, params: invalid_params
+
+          html = Nokogiri::HTML(response.body)
+          expect(html.at_css('h1').text).to include("学習時間登録")
+          expect(html.at_css('form')).to be_present
         end
         it 'createアクションにリクエストするとunprocessable_contentのステータスが返る' do
+          post study_records_path, params: invalid_params
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end
