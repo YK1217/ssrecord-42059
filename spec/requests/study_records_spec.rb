@@ -173,4 +173,40 @@ RSpec.describe "StudyRecords", type: :request do
       end
     end
   end
+
+  describe 'PATCH #update' do
+    context 'ログインしている場合' do
+      before do
+        sign_in user
+        study_record
+      end
+
+      context '更新できる値の場合' do
+        it 'updateアクションにリクエストすると学習記録の内容が更新される' do
+        end
+        it 'updateアクションにリクエストすると学習メモが更新される' do
+        end
+        it 'updateアクションにリクエストするとトップページへリダイレクトされる' do
+        end
+        it 'updateアクションにリクエストすると学習時間を更新しましたというメッセージが表示される' do
+        end
+      end
+
+      context '更新できない値の場合' do
+        it 'updateアクションにリクエストしても学習記録の内容は更新されない' do
+        end
+        it 'updateアクションにリクエストするとeditテンプレートが再表示される' do
+        end
+        it 'updateアクションにリクエストするとunprocessable_contentのステータスが返る' do
+        end
+      end
+
+      context '他ユーザーの学習記録の場合' do
+        it 'updateアクションにリクエストしても学習記録は更新されない' do
+        end
+        it 'updateアクションにリクエストするとアクセスできない' do
+        end
+      end
+    end
+  end
 end

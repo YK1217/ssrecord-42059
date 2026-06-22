@@ -165,6 +165,7 @@ RSpec.describe "SleepRecords", type: :request do
     context 'ログインしている場合' do
       before do
         sign_in user
+        sleep_record
       end
 
       context '更新できる値の場合' do
@@ -216,14 +217,20 @@ RSpec.describe "SleepRecords", type: :request do
       end
 
       context '他ユーザーの睡眠記録の場合' do
-          let(:valid_params) do
-            {
-              sleep_record: attributes_for(:sleep_record, user: other_user)
-            }
-          end
+
+        before do
+          other_sleep_record
+        end
+
+        let(:valid_params) do
+          {
+            sleep_record: attributes_for(:sleep_record, user: other_user)
+          }
+        end
+
         it 'updateアクションにリクエストしても睡眠記録は更新されない' do
           original_start_time = other_sleep_record.start_time
-          patch sleep_record_path(other_sleep_record)
+          patch sleep_record_path(other_sleep_record), params: valid_params
           expect(other_sleep_record.reload.start_time).to eq(original_start_time)
         end
         it 'updateアクションにリクエストするとアクセスできない' do
