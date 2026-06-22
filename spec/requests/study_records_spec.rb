@@ -258,7 +258,21 @@ RSpec.describe "StudyRecords", type: :request do
     end
 
     context 'ログインしていない場合' do
+
+      let(:valid_params) do
+        {
+          study_record: attributes_for(:study_record, user: user)
+        }
+      end
+
+      it 'updateアクションにリクエストしても学習記録は更新されない' do
+        original_start_time = study_record.start_time
+        patch study_record_path(study_record), params: valid_params
+        expect(study_record.reload.start_time).to eq(original_start_time)
+      end
       it 'updateアクションにリクエストするとログイン画面へリダイレクトされる' do
+        patch study_record_path(study_record), params: valid_params
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end

@@ -246,6 +246,12 @@ RSpec.describe "SleepRecords", type: :request do
           sleep_record: attributes_for(:sleep_record, user: user)
         }
       end
+
+      it 'updateアクションにリクエストしても睡眠記録は更新されない' do
+        original_start_time = sleep_record.start_time
+        patch sleep_record_path(sleep_record), params: valid_params
+        expect(sleep_record.reload.start_time).to eq(original_start_time)
+      end
       it 'updateアクションにリクエストするとログイン画面へリダイレクトされる' do
         patch sleep_record_path(sleep_record), params: valid_params
         expect(response).to redirect_to(new_user_session_path)
