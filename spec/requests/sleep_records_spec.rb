@@ -135,6 +135,7 @@ RSpec.describe "SleepRecords", type: :request do
       it 'editアクションにリクエストすると睡眠時間編集フォームが表示される' do
         html = Nokogiri::HTML(response.body)
         expect(html.at_css('h1').text).to include("睡眠時間編集")
+        expect(html.at_css('form')).to be_present
       end
       it 'editアクションにリクエストすると登録済みの就寝日時が表示される' do
         html = Nokogiri::HTML(response.body)

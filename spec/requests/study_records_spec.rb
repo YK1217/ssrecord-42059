@@ -134,24 +134,42 @@ RSpec.describe "StudyRecords", type: :request do
     context 'ログインしている場合'do
       before do
         sign_in user
+        get edit_study_record_path(study_record)
       end
 
       it '自分の学習記録のeditアクションにリクエストすると正常にレスポンスが返ってくる' do
+        expect(response).to have_http_status(:ok)
       end
       it 'editアクションにリクエストすると学習時間編集フォームが表示される' do
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css('h1').text).to include("学習時間編集")
+        expect(html.at_css('form')).to be_present
       end
       it 'editアクションにリクエストすると登録済みの学習開始時間が表示される' do
+        html = Nokogiri::HTML(response.body)
+        start_time_value = build_expected_start_time_local_value(study_record)
+        expect(html.at_css('input[name="study_record[start_time]"]')['value']).to eq(start_time_value)
       end
       it 'editアクションにリクエストすると登録済みの学習終了時刻が表示される' do
+        html = Nokogiri::HTML(response.body)
+        end_clock_value = build_end_clock_from(study_record)
+        expect(html.at_css('input[name="study_record[end_clock]"]')['value']).to eq(end_clock_value)
       end
       it 'editアクションにリクエストすると登録済みの学習メモが表示される' do
+        html = Nokogiri::HTML(response.body)
+        display_text = html.at_css('textarea[name="study_record[study_memo]"]').text.strip
+        expect(display_text).to eq(study_record.study_memo)
       end
       it '他ユーザーの学習記録のeditアクションにリクエストするとアクセスできない' do
+        get edit_study_record_path(other_study_record)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
     context 'ログインしていない場合' do
       it 'editアクションにリクエストするとログインページにリダイレクトされる' do
+        get edit_study_record_path(study_record)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
