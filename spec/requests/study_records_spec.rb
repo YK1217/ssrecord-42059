@@ -234,9 +234,25 @@ RSpec.describe "StudyRecords", type: :request do
       end
 
       context '他ユーザーの学習記録の場合' do
+
+        before do
+          other_study_record
+        end
+
+        let(:valid_params) do
+          {
+            study_record: attributes_for(:study_record, user: other_user)
+          }
+        end
+
         it 'updateアクションにリクエストしても学習記録は更新されない' do
+          original_start_time = other_study_record.start_time
+          patch study_record_path(other_study_record), params: valid_params
+          expect(other_study_record.reload.start_time).to eq(original_start_time)
         end
         it 'updateアクションにリクエストするとアクセスできない' do
+          patch study_record_path(other_study_record), params: valid_params
+          expect(response).to have_http_status(:not_found)
         end
       end
     end
