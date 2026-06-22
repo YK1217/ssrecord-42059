@@ -240,5 +240,10 @@ RSpec.describe "StudyRecords", type: :request do
         end
       end
     end
+
+    context 'ログインしていない場合' do
+      it 'updateアクションにリクエストするとログイン画面へリダイレクトされる' do
+      end
+    end
   end
 end
