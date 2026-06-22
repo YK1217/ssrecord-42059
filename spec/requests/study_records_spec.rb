@@ -276,4 +276,34 @@ RSpec.describe "StudyRecords", type: :request do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    context 'ログインしている場合' do
+      before do
+        sign_in user
+        study_record
+      end
+
+      it 'destroyアクションにリクエストすると自分のStudyRecordの数が1減る' do
+      end
+      it 'destroyアクションにリクエストするとトップページへリダイレクトされる' do
+      end
+      it 'destroyアクションにリクエストすると学習時間を削除しましたというメッセージが表示される' do
+      end
+      it '他ユーザーの学習記録は削除できない' do
+      end
+    end
+
+    context 'ログインしていない場合' do
+      before do
+        study_record
+      end
+
+      it 'destroyアクションにリクエストしてもStudyRecordの数は減らない' do
+      end
+
+      it 'destroyアクションにリクエストするとログイン画面へリダイレクトされる' do
+      end
+    end
+  end
 end
