@@ -1,6 +1,6 @@
 module TimeSupport
   def build_end_time_from(record)
-    hour, minute = record.end_clock.split(":").map(&:to_i)
+    hour, minute = record.end_clock.split(':').map(&:to_i)
 
     Time.zone.local(
       record.start_time.to_date.year,
@@ -22,9 +22,7 @@ module TimeSupport
   end
 
   def build_time_difference_from(record)
-    if record.end_time.blank?
-      return ''
-    end
+    return '' if record.end_time.blank?
 
     end_time = build_next_day_end_time_from(record)
     diff = end_time - record.start_time
@@ -40,10 +38,10 @@ module TimeSupport
   end
 
   def build_end_clock_from(record)
-    return record.end_time&.strftime("%H:%M") || ''
+    record.end_time&.strftime('%H:%M') || ''
   end
 
   def build_expected_start_time_value(record)
-    return record.start_time.strftime("%Y-%m-%dT%H:%M")
+    record.start_time.strftime('%Y-%m-%dT%H:%M')
   end
 end

@@ -3,7 +3,7 @@ FactoryBot.define do
     association :user
 
     transient do
-      base_date { rand(11.days.ago.to_date..2.day.ago.to_date) }
+      base_date { rand(11.days.ago.to_date..2.days.ago.to_date) }
     end
 
     # start_time: 22:00 + 0～240分(=22:00～2:00)
@@ -15,10 +15,10 @@ FactoryBot.define do
     # end_clock: 22:00 + 480分～600分(=6:00～8:00)
     end_clock do
       minutes = rand(8 * 60..10 * 60)
-      hour = (22 + minutes / 60) % 24
+      hour = (22 + (minutes / 60)) % 24
       minute = minutes % 60
 
-      format("%02d:%02d", hour, minute)
+      format('%02d:%02d', hour, minute)
     end
   end
 end

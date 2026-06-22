@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "ユーザー新規登録", type: :system do
+RSpec.describe 'ユーザー新規登録', type: :system do
   before do
     @user = FactoryBot.build(:user)
   end
@@ -12,7 +12,7 @@ RSpec.describe "ユーザー新規登録", type: :system do
       # 自動的にログインページへ遷移する
       expect(page).to have_current_path(new_user_session_path)
       # ログインページにサインアップページへ遷移するボタンがある
-      expect(page).to have_content('新規登録')
+      expect(page).to have_text('新規登録')
       # 新規登録ページへ移動する
       visit new_user_registration_path
       # ユーザー情報を入力する
@@ -21,15 +21,16 @@ RSpec.describe "ユーザー新規登録", type: :system do
       fill_in 'パスワード', with: @user.password
       fill_in 'パスワード（確認）', with: @user.password_confirmation
       # 登録ボタンを押すとトップページに移動し、Userモデルのカウントが1上がることを確認する
-      expect{
+      expect  do
         click_button '新規登録'
         expect(page).to have_current_path(root_path)
-      }.to change { User.count }.by(1)
+      end.to change { User.count }.by(1)
       # ヘッダーにユーザー名とログアウトボタンが表示される
-      expect(page).to have_content(@user.name)
-      expect(page).to have_content('ログアウト')
+      expect(page).to have_text(@user.name)
+      expect(page).to have_text('ログアウト')
     end
   end
+
   context 'ユーザー新規登録ができない時' do
     it '誤った情報ではユーザー新規登録ができずに新規登録ページへ戻ってくる' do
       # トップページに移動する
@@ -37,7 +38,7 @@ RSpec.describe "ユーザー新規登録", type: :system do
       # 自動的にログインページへ遷移する
       expect(page).to have_current_path(new_user_session_path)
       # ログインページにサインアップページへ遷移するボタンがある
-      expect(page).to have_content('新規登録')
+      expect(page).to have_text('新規登録')
       # 新規登録ページへ移動する
       visit new_user_registration_path
       # ユーザー情報を入力する
@@ -46,10 +47,10 @@ RSpec.describe "ユーザー新規登録", type: :system do
       fill_in 'パスワード', with: ''
       fill_in 'パスワード（確認）', with: ''
       # 登録ボタンを押すとエラーが表示され、Userモデルのカウントが上がらない
-      expect{
+      expect  do
         click_button '新規登録'
-        expect(page).to have_selector(".alert-danger",text: '入力内容を確認してください')
-    }.not_to change { User.count }
+        expect(page).to have_css('.alert-danger', text: '入力内容を確認してください')
+      end.not_to(change { User.count })
       # 新規登録ページへ戻される
       expect(page).to have_current_path(new_user_registration_path)
     end
@@ -75,10 +76,11 @@ RSpec.describe 'ログイン', type: :system do
       # トップページに遷移することを確認する
       expect(page).to have_current_path(root_path)
       # ヘッダーにユーザー名とログアウトボタンが表示される
-      expect(page).to have_content(@user.name)
-      expect(page).to have_content('ログアウト')
+      expect(page).to have_text(@user.name)
+      expect(page).to have_text('ログアウト')
     end
   end
+
   context 'ログインできない時' do
     it '保存されているユーザーの情報と合致しなければログインできない' do
       # トップページに移動する
@@ -91,10 +93,9 @@ RSpec.describe 'ログイン', type: :system do
       # ログインボタンを押す
       click_button 'ログイン'
       # エラーメッセージが表示されることを確認する
-      expect(page).to have_selector(".alert-danger",text: 'メールアドレスまたはパスワードが違います。')
+      expect(page).to have_css('.alert-danger', text: 'メールアドレスまたはパスワードが違います。')
       # ログインページへ戻されることを確認する
       expect(page).to have_current_path(new_user_session_path)
     end
   end
-
 end

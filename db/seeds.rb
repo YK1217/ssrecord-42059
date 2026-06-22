@@ -1,26 +1,26 @@
 # テストログイン用ユーザーを作成する
-test_user = User.find_or_initialize_by(email: "test@example.ne.jp")
-test_user.name = "Test_User"
-test_user.password = ENV["TEST_PASSWORD"]
+test_user = User.find_or_initialize_by(email: 'test@example.ne.jp')
+test_user.name = 'Test_User'
+test_user.password = ENV.fetch('TEST_PASSWORD', nil)
 test_user.password_confirmation = test_user.password
 
 if test_user.save
-  puts "テストログイン用ユーザーを作成しました"
-  puts "email: test@example.ne.jp"
-  puts "name: Test_User"
+  puts 'テストログイン用ユーザーを作成しました'
+  puts 'email: test@example.ne.jp'
+  puts 'name: Test_User'
 else
-  puts "テストログイン用ユーザーの作成に失敗しました"
+  puts 'テストログイン用ユーザーの作成に失敗しました'
   puts test_user.errors.full_messages
   exit
 end
 
 if Rails.env.production?
-  puts "本番環境のため、テストログイン用ユーザーのみ作成します"
+  puts '本番環境のため、テストログイン用ユーザーのみ作成します'
   exit
 end
 
 if Rails.env.development?
-  puts "開発環境のため、テストログイン用ユーザーに加えて、睡眠時間・学習時間の記録も作成します"
+  puts '開発環境のため、テストログイン用ユーザーに加えて、睡眠時間・学習時間の記録も作成します'
 
   # 作っておきたい記録の数
   target_count = 11
@@ -31,13 +31,13 @@ if Rails.env.development?
   needed_count = target_count - test_user.study_records.size
 
   if needed_count > 0
-    puts "----------------------------------------"
+    puts '----------------------------------------'
     puts "テストログイン用ユーザーに学習記録を #{needed_count}個作ります"
 
     current_date = Date.yesterday
     created_count = 0
 
-    while created_count < needed_count do
+    while created_count < needed_count
       unless test_user.study_records.where(study_date: current_date).exists?
         new_record = FactoryBot.build(:study_record, user: test_user)
 
@@ -48,14 +48,10 @@ if Rails.env.development?
         )
 
         # end_timeが登録済みの学習記録が3個以上あれば、一定確率で終了時刻を未入力にする
-        if test_user.study_records.where.not(end_time: nil).count >= 3 && rand < nil_rate
-          new_record.end_clock = nil
-        end
+        new_record.end_clock = nil if test_user.study_records.where.not(end_time: nil).count >= 3 && rand < nil_rate
 
         # study_memoが登録済みの学習記録が3個以上あれば、一定確率で学習メモを未入力にする
-        if test_user.study_records.where.not(study_memo: nil).count >= 3 && rand < nil_rate
-          new_record.study_memo = nil
-        end
+        new_record.study_memo = nil if test_user.study_records.where.not(study_memo: nil).count >= 3 && rand < nil_rate
 
         new_record.save!
 
@@ -76,13 +72,13 @@ if Rails.env.development?
   needed_count = target_count - test_user.sleep_records.size
 
   if needed_count > 0
-    puts "----------------------------------------"
+    puts '----------------------------------------'
     puts "テストログイン用ユーザーに睡眠記録を #{needed_count}個作ります"
 
     current_date = Date.yesterday
     created_count = 0
 
-    while created_count < needed_count do
+    while created_count < needed_count
       unless test_user.sleep_records.where(sleep_date: current_date).exists?
         new_record = FactoryBot.build(:sleep_record, user: test_user)
 
@@ -97,9 +93,7 @@ if Rails.env.development?
         new_record.start_time = base_time + rand(0..4 * 60).minutes
 
         # end_timeが登録済みの睡眠記録が3個以上あれば、一定確率で終了時刻を未入力にする
-        if test_user.sleep_records.where.not(end_time: nil).count >= 3 && rand < nil_rate
-          new_record.end_clock = nil
-        end
+        new_record.end_clock = nil if test_user.sleep_records.where.not(end_time: nil).count >= 3 && rand < nil_rate
 
         new_record.save!
 

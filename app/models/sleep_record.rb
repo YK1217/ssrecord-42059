@@ -11,10 +11,11 @@ class SleepRecord < ApplicationRecord
 
   validates :sleep_date, uniqueness: {
     scope: :user_id,
-    message: "の睡眠記録はすでに登録されています"
+    message: 'の睡眠記録はすでに登録されています'
   }
 
-  validates :sleep_time, numericality: {greater_than_or_equal_to: 30, less_than_or_equal_to: 14 * 60, message: "は30分以上14時間以下になるよう入力してください"}, allow_nil: true
+  validates :sleep_time,
+            numericality: { greater_than_or_equal_to: 30, less_than_or_equal_to: 14 * 60, message: 'は30分以上14時間以下になるよう入力してください' }, allow_nil: true
 
   validate :start_time_must_not_be_future
   validate :start_time_must_not_overlap_with_study_records
@@ -25,7 +26,7 @@ class SleepRecord < ApplicationRecord
   def set_end_clock_from_end_time
     return if end_time.blank?
 
-    self.end_clock = end_time.strftime("%H:%M")
+    self.end_clock = end_time.strftime('%H:%M')
   end
 
   private
@@ -33,14 +34,14 @@ class SleepRecord < ApplicationRecord
   def set_sleep_date
     return if start_time.blank?
 
-    self.sleep_date = (start_time.in_time_zone - 5.hour).to_date
+    self.sleep_date = (start_time.in_time_zone - 5.hours).to_date
   end
 
   def set_end_time
     return if start_time.blank?
     return if end_clock.blank?
 
-    hour, minute = end_clock.split(":").map(&:to_i)
+    hour, minute = end_clock.split(':').map(&:to_i)
 
     self.end_time = Time.zone.local(
       start_time.to_date.year,
@@ -50,9 +51,9 @@ class SleepRecord < ApplicationRecord
       minute
     )
 
-    if end_time < start_time
-      self.end_time += 1.day
-    end
+    return unless end_time < start_time
+
+    self.end_time += 1.day
   end
 
   def set_sleep_time
@@ -65,9 +66,9 @@ class SleepRecord < ApplicationRecord
   def start_time_must_not_be_future
     return if start_time.blank?
 
-    if start_time > Time.current
-      errors.add(:start_time, "は現在より未来の日時を登録できません")
-    end
+    return unless start_time > Time.current
+
+    errors.add(:start_time, 'は現在より未来の日時を登録できません')
   end
 
   def start_time_must_not_overlap_with_study_records
@@ -75,22 +76,22 @@ class SleepRecord < ApplicationRecord
 
     study_records = set_candidate_study_records
 
-    if study_records.present?
-      study_records.each do |study_record|
-        if study_record.start_time < start_time && start_time < study_record.end_time && !errors.added?(:base, "学習時間と重複しています")
-        errors.add(:base, "学習時間と重複しています")
-        end
+    return unless study_records.present?
+
+    study_records.each do |study_record|
+      if study_record.start_time < start_time && start_time < study_record.end_time && !errors.added?(:base,
+                                                                                                      '学習時間と重複しています')
+        errors.add(:base, '学習時間と重複しています')
       end
     end
   end
 
-
   def end_time_must_not_be_future
     return if end_time.blank?
 
-    if end_time > Time.current
-      errors.add(:end_time, "は現在より未来の日時を登録できません")
-    end
+    return unless end_time > Time.current
+
+    errors.add(:end_time, 'は現在より未来の日時を登録できません')
   end
 
   def sleep_time_must_not_overlap_with_study_records
@@ -99,8 +100,10 @@ class SleepRecord < ApplicationRecord
 
     study_records = set_candidate_study_records
 
-    if study_records.present? && study_records.any? {|study_record| time_overlap?(study_record)} && !errors.added?(:base, "学習時間と重複しています")
-      errors.add(:base, "学習時間と重複しています")
+    if study_records.present? && study_records.any? do |study_record|
+      time_overlap?(study_record)
+    end && !errors.added?(:base, '学習時間と重複しています')
+      errors.add(:base, '学習時間と重複しています')
     end
   end
 
@@ -110,9 +113,7 @@ class SleepRecord < ApplicationRecord
     from = start_time - 1.day
     to = start_time + 1.day
 
-    candidate_study_records = StudyRecord.where(user_id:user_id, start_time:from...to).where.not(end_time: nil)
-
-    return candidate_study_records
+    StudyRecord.where(user_id: user_id, start_time: from...to).where.not(end_time: nil)
   end
 
   def time_overlap?(other_record)
@@ -123,8 +124,7 @@ class SleepRecord < ApplicationRecord
     return if end_time_in_database.blank?
     return if end_clock.present?
 
-    self.end_clock = end_time_in_database.strftime("%H:%M")
-    errors.add(:end_time, "は登録済みの起床時刻がある場合、空欄にできません")
+    self.end_clock = end_time_in_database.strftime('%H:%M')
+    errors.add(:end_time, 'は登録済みの起床時刻がある場合、空欄にできません')
   end
-
 end

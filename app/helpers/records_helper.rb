@@ -1,5 +1,4 @@
 module RecordsHelper
-
   # 記録時間表示用
   def format_record_time(minutes)
     return incomplete_badge if minutes.blank?
@@ -22,18 +21,18 @@ module RecordsHelper
   end
 
   def incomplete_badge
-    content_tag(:span, "未完了", class: "badge bg-warning text-dark")
+    content_tag(:span, '未完了', class: 'badge bg-warning text-dark')
   end
 
   def unregistered_badge
-    content_tag(:span, "未登録", class: "badge bg-secondary")
+    content_tag(:span, '未登録', class: 'badge bg-secondary')
   end
 
   def exists_badge
-    content_tag(:span, "あり", class: "badge bg-danger")
+    content_tag(:span, 'あり', class: 'badge bg-danger')
   end
 
   def none_badge
-    content_tag(:span, "なし", class: "badge bg-success")
+    content_tag(:span, 'なし', class: 'badge bg-success')
   end
 end

@@ -5,35 +5,35 @@ class SleepRecordsController < ApplicationController
     @sleep_record = SleepRecord.new
   end
 
+  def edit
+    @sleep_record = current_user.sleep_records.find(params[:id])
+    @sleep_record.set_end_clock_from_end_time
+  end
+
   def create
     @sleep_record = current_user.sleep_records.new(sleep_record_params)
 
     if @sleep_record.save
-      redirect_to root_path, notice: "睡眠時間を登録しました"
+      redirect_to root_path, notice: '睡眠時間を登録しました'
     else
       render :new, status: :unprocessable_content
     end
-  end
-
-  def destroy
-    sleep_record = current_user.sleep_records.find(params[:id])
-    sleep_record.destroy
-    redirect_to root_path, notice: "睡眠時間を削除しました"
-  end
-
-  def edit
-    @sleep_record = current_user.sleep_records.find(params[:id])
-    @sleep_record.set_end_clock_from_end_time
   end
 
   def update
     @sleep_record = current_user.sleep_records.find(params[:id])
 
     if @sleep_record.update(sleep_record_params)
-      redirect_to root_path, notice: "睡眠時間を更新しました"
+      redirect_to root_path, notice: '睡眠時間を更新しました'
     else
       render :edit, status: :unprocessable_content
     end
+  end
+
+  def destroy
+    sleep_record = current_user.sleep_records.find(params[:id])
+    sleep_record.destroy
+    redirect_to root_path, notice: '睡眠時間を削除しました'
   end
 
   private

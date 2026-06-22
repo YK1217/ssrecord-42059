@@ -15,10 +15,10 @@ FactoryBot.define do
     # end_clock: 9:00 + 360〜480分（=15:00〜17:00）
     end_clock do
       minutes = rand(6 * 60..8 * 60)
-      hour = 9 + minutes / 60
+      hour = 9 + (minutes / 60)
       minute = minutes % 60
 
-      format("%02d:%02d", hour, minute)
+      format('%02d:%02d', hour, minute)
     end
 
     study_memo { Faker::Lorem.sentence }

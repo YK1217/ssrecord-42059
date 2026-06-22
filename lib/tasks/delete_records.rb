@@ -1,14 +1,14 @@
 unless Rails.env.development?
-  puts "development環境以外では実行できません"
+  puts 'development環境以外では実行できません'
   exit
 end
 
-email = "test@example.ne.jp"
+email = 'test@example.ne.jp'
 
 user = User.find_by(email: email)
 
 if user.nil?
-  puts "ユーザーが見つかりません"
+  puts 'ユーザーが見つかりません'
   exit
 end
 
