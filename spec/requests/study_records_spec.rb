@@ -312,9 +312,14 @@ RSpec.describe "StudyRecords", type: :request do
       end
 
       it 'destroyアクションにリクエストしてもStudyRecordの数は減らない' do
+        expect{
+          delete study_record_path(study_record)
+        }.not_to change(StudyRecord, :count)
       end
 
       it 'destroyアクションにリクエストするとログイン画面へリダイレクトされる' do
+        delete study_record_path(study_record)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
