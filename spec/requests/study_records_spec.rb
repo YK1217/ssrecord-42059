@@ -2,6 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "StudyRecords", type: :request do
   let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
+  let(:study_record) { create(:study_record, user: user) }
+  let(:other_study_record) { create(:study_record, user: other_user) }
+
+  def build_expected_start_time_local_value(record)
+    record.start_time.localtime.strftime("%Y-%m-%dT%H:%M:%S")
+  end
 
   describe 'GET #new' do
     context 'ログインしている場合' do
@@ -119,6 +126,32 @@ RSpec.describe "StudyRecords", type: :request do
       it 'createアクションにリクエストするとログイン画面へリダイレクトされる' do
         post study_records_path, params: valid_params
         expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'GET #edit' do
+    context 'ログインしている場合'do
+      before do
+        sign_in user
+      end
+
+      it '自分の学習記録のeditアクションにリクエストすると正常にレスポンスが返ってくる' do
+      end
+      it 'editアクションにリクエストすると学習時間編集フォームが表示される' do
+      end
+      it 'editアクションにリクエストすると登録済みの学習開始時間が表示される' do
+      end
+      it 'editアクションにリクエストすると登録済みの学習終了時刻が表示される' do
+      end
+      it 'editアクションにリクエストすると登録済みの学習メモが表示される' do
+      end
+      it '他ユーザーの学習記録のeditアクションにリクエストするとアクセスできない' do
+      end
+    end
+
+    context 'ログインしていない場合' do
+      it 'editアクションにリクエストするとログインページにリダイレクトされる' do
       end
     end
   end
