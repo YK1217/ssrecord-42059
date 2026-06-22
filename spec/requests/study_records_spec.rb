@@ -285,12 +285,24 @@ RSpec.describe "StudyRecords", type: :request do
       end
 
       it 'destroyアクションにリクエストすると自分のStudyRecordの数が1減る' do
+        expect {
+          delete study_record_path(study_record)
+        }.to change(StudyRecord, :count).by(-1)
       end
       it 'destroyアクションにリクエストするとトップページへリダイレクトされる' do
+        delete study_record_path(study_record)
+        expect(response).to redirect_to(root_path)
       end
       it 'destroyアクションにリクエストすると学習時間を削除しましたというメッセージが表示される' do
+        delete study_record_path(study_record)
+        follow_redirect!
+        expect(response.body).to include("学習時間を削除しました")
       end
       it '他ユーザーの学習記録は削除できない' do
+        other_study_record
+        expect{
+          delete study_record_path(other_study_record)
+        }.not_to change(StudyRecord, :count)
       end
     end
 
