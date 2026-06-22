@@ -105,10 +105,20 @@ RSpec.describe "StudyRecords", type: :request do
     end
 
     context 'ログインしていない場合' do
+      let(:valid_params) do
+        {
+          study_record: attributes_for(:study_record, user: user)
+        }
+      end
       it 'createアクションにリクエストしてもStudyRecordの数は増えない' do
+        expect {
+          post study_records_path, params: valid_params
+        }.not_to change(StudyRecord, :count)
       end
 
       it 'createアクションにリクエストするとログイン画面へリダイレクトされる' do
+        post study_records_path, params: valid_params
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
