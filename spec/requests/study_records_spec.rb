@@ -182,22 +182,54 @@ RSpec.describe "StudyRecords", type: :request do
       end
 
       context '更新できる値の場合' do
+
+        let(:valid_params) do
+          {
+            study_record: attributes_for(:study_record, user: user)
+          }
+        end
+
         it 'updateアクションにリクエストすると学習記録の内容が更新される' do
+          patch study_record_path(study_record), params: valid_params
+          expect(study_record.reload.start_time).to eq(valid_params[:study_record][:start_time])
         end
         it 'updateアクションにリクエストすると学習メモが更新される' do
+          patch study_record_path(study_record), params: valid_params
+          expect(study_record.reload.study_memo).to eq(valid_params[:study_record][:study_memo])
         end
         it 'updateアクションにリクエストするとトップページへリダイレクトされる' do
+          patch study_record_path(study_record), params: valid_params
+          expect(response).to redirect_to(root_path)
         end
         it 'updateアクションにリクエストすると学習時間を更新しましたというメッセージが表示される' do
+          patch study_record_path(study_record), params: valid_params
+          follow_redirect!
+          expect(response.body).to include("学習時間を更新しました")
         end
       end
 
       context '更新できない値の場合' do
+
+        let(:invalid_params) do
+          {
+            study_record: attributes_for(:study_record, user: user, start_time: nil)
+          }
+        end
+
         it 'updateアクションにリクエストしても学習記録の内容は更新されない' do
+          original_start_time = study_record.start_time
+          patch study_record_path(study_record), params: invalid_params
+          expect(study_record.reload.start_time).to eq(original_start_time)
         end
         it 'updateアクションにリクエストするとeditテンプレートが再表示される' do
+          patch study_record_path(study_record), params: invalid_params
+          html = Nokogiri::HTML(response.body)
+          expect(html.at_css('h1').text).to include("学習時間編集")
+          expect(html.at_css('form')).to be_present
         end
         it 'updateアクションにリクエストするとunprocessable_contentのステータスが返る' do
+          patch study_record_path(study_record), params: invalid_params
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
 
