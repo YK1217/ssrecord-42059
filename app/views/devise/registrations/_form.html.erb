@@ -1,0 +1,35 @@
+<%= form_for(user_resource, as: resource_name, url: form_url, html: { method: form_method }) do |f| %>
+  <div class="mb-3">
+    <%= f.label :name, "ユーザー名", class: "form-label" %>
+    <%= f.text_field :name, autofocus: true, maxlength: 10, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :email, "メールアドレス", class: "form-label" %>
+    <%= f.email_field :email, autocomplete: "email", class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :password, "パスワード", class: "form-label" %>
+    <%= f.password_field :password, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :password_confirmation, "パスワード（確認）", class: "form-label" %>
+    <%= f.password_field :password_confirmation, class: "form-control" %>
+  </div>
+
+  <% if show_current_password %>
+    <div class="mb-3">
+      <%= f.label :current_password, "現在のパスワード", class: "form-label" %>
+      <%= f.password_field :current_password, class: "form-control" %>
+      <div class="form-text">
+        ユーザー情報を更新するには現在のパスワード(変更する場合は変更前のもの)を入力してください。
+      </div>
+    </div>
+  <% end %>
+
+  <div class="d-grid">
+    <%= f.submit submit_text, class: "btn btn-primary" %>
+  </div>
+<% end %>
