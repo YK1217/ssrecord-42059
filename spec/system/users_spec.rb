@@ -26,8 +26,10 @@ RSpec.describe 'ユーザー新規登録', type: :system do
         expect(page).to have_current_path(root_path)
       end.to change { User.count }.by(1)
       # ヘッダーにユーザー名とログアウトボタンが表示される
-      expect(page).to have_text(@user.name)
-      expect(page).to have_text('ログアウト')
+      within('.navbar') do
+        expect(page).to have_text(@user.name)
+        expect(page).to have_button('ログアウト')
+      end
     end
   end
 
@@ -76,8 +78,10 @@ RSpec.describe 'ログイン', type: :system do
       # トップページに遷移することを確認する
       expect(page).to have_current_path(root_path)
       # ヘッダーにユーザー名とログアウトボタンが表示される
-      expect(page).to have_text(@user.name)
-      expect(page).to have_text('ログアウト')
+      within('.navbar') do
+        expect(page).to have_text(@user.name)
+        expect(page).to have_button('ログアウト')
+      end
     end
   end
 
