@@ -126,8 +126,8 @@ RSpec.describe 'ログイン中のユーザー情報の編集', type: :system do
       # ログイン中のユーザー情報の内容がフォームに入っていることを確認する
       expect(page).to have_field('ユーザー名', with: @user.name)
       expect(page).to have_field('メールアドレス', with: @user.email)
-      expect(page).to have_field('パスワード', with: nil)
-      expect(page).to have_field('パスワード（確認）', with: nil)
+      expect(page).to have_field('パスワード', with: '')
+      expect(page).to have_field('パスワード（確認）', with: '')
       # ユーザー情報を編集する
       fill_in 'ユーザー名', with: 'testuser'
       fill_in 'メールアドレス', with: 'test@example.com'
