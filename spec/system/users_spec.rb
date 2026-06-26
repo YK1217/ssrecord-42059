@@ -152,14 +152,34 @@ RSpec.describe 'ログイン中のユーザー情報の編集', type: :system do
       # ログインする
       sign_in(@user)
       # ヘッダーにマイページへのリンクがあることを確認する
+      within('.navbar') do
+        expect(page).to have_link('マイページ', href: user_path)
+      end
       # マイページへ移動する
+      visit user_path
       # ユーザー情報編集ボタンがあることを確認する
+      expect(page).to have_link('ユーザー情報編集', href: edit_user_registration_path)
       # 編集ページへ遷移する
+      visit edit_user_registration_path
       # ログイン中のユーザー情報の内容がフォームに入っていることを確認する
+      expect(page).to have_field('ユーザー名', with: @user.name)
+      expect(page).to have_field('メールアドレス', with: @user.email)
+      expect(page).to have_field('パスワード', with: nil)
+      expect(page).to have_field('パスワード（確認）', with: nil)
       # ユーザー情報を編集する
+      fill_in 'ユーザー名', with: ''
+      fill_in 'メールアドレス', with: ''
+      fill_in 'パスワード', with: ''
+      fill_in 'パスワード（確認）', with: ''
       # 更新前のパスワードを入力する
+      fill_in '現在のパスワード', with: @user.password
       # 送信するとエラーが表示され、Userモデルのカウントが変化しないことを確認する
+      expect do
+        click_button '更新'
+        expect(page).to have_css(".alert-danger", text: '入力内容を確認してください')
+      end.not_to(change { User.count })
       # ユーザー情報編集画面に戻されることを確認する
+      expect(page).to have_current_path(edit_user_registration_path)
     end
   end
 end
