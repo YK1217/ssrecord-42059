@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users,
-            controllers: {
-              registrations: 'users/registrations'
-            }
+             controllers: {
+               registrations: 'users/registrations'
+             }
 
   root 'daily_records#index'
 

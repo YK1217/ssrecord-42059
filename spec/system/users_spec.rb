@@ -147,6 +147,7 @@ RSpec.describe 'ログイン中のユーザー情報の編集', type: :system do
       end
     end
   end
+
   context 'ユーザー情報の編集ができない時' do
     it '誤った情報を入力すればユーザー情報を編集することができない' do
       # ログインする
@@ -176,7 +177,7 @@ RSpec.describe 'ログイン中のユーザー情報の編集', type: :system do
       # 送信するとエラーが表示され、Userモデルのカウントが変化しないことを確認する
       expect do
         click_button '更新'
-        expect(page).to have_css(".alert-danger", text: '入力内容を確認してください')
+        expect(page).to have_css('.alert-danger', text: '入力内容を確認してください')
       end.not_to(change { User.count })
       # ユーザー情報編集画面に戻されることを確認する
       expect(page).to have_current_path(edit_user_registration_path)
