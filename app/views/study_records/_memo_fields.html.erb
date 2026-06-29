@@ -2,3 +2,27 @@
   <%= f.label :study_memo, "学習内容", class: "form-label" %>
   <%= f.text_area :study_memo, class: "form-control", rows: 4 %>
 </div>
+
+<div class="mb-3">
+  <%= f.label :concentration_level, "集中度", class: "form-label d-block" %>
+
+  <div class="d-flex flex-wrap gap-3">
+    <% [
+      ["評価なし", 0],
+      ["1", 1],
+      ["2", 2],
+      ["3", 3],
+      ["4", 4],
+      ["5", 5]
+    ].each do |label, value| %>
+      <div class="form-check">
+        <%= f.radio_button :concentration_level, value, class: "form-check-input" %>
+        <%= f.label :"concentration_level_#{value}", label, class: "form-check-label" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="form-text">
+    評価しない場合は「評価なし」を選択してください。
+  </div>
+</div>
