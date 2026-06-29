@@ -57,6 +57,7 @@ if Rails.env.development?
 
         puts "\nstart_time: #{new_record.start_time}"
         puts "end_time: #{new_record.end_time.inspect}"
+        puts "concentration_level: #{new_record.concentration_level}"
         puts "study_memo: #{new_record.study_memo.inspect}"
 
         created_count += 1
