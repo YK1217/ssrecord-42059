@@ -39,6 +39,6 @@ class StudyRecordsController < ApplicationController
   private
 
   def study_record_params
-    params.require(:study_record).permit(:start_time, :end_clock, :study_memo)
+    params.require(:study_record).permit(:start_time, :end_clock, :study_memo, :concentration_level)
   end
 end
