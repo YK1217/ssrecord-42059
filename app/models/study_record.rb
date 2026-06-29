@@ -17,6 +17,13 @@ class StudyRecord < ApplicationRecord
   validates :study_time,
             numericality: { greater_than_or_equal_to: 60, less_than_or_equal_to: 8 * 60, message: 'は1時間以上8時間以下になるよう入力してください' }, allow_nil: true
 
+  validates :concentration_level,
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 0,
+              less_than_or_equal_to: 5
+            }
+
   validate :start_time_must_not_be_future
   validate :start_time_must_be_within_study_hours
   validate :start_time_must_not_overlap_with_sleep_records
