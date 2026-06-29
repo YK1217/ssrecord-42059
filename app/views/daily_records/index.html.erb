@@ -31,6 +31,7 @@
                   <th>開始時間</th>
                   <th>終了時間</th>
                   <th>記録時間</th>
+                  <th>集中度</th>
                   <th>学習メモ</th>
                   <th>操作</th>
                 </tr>
@@ -51,6 +52,7 @@
                       <%= format_record_time(record.sleep_time) %>
                     </td>
                     <td>-</td>
+                    <td>-</td>
                     <td>
                       <%= link_to "編集" , edit_sleep_record_path(record.id), class: "btn btn-outline-primary btn-sm" %>
                       <%= link_to "削除", sleep_record_path(record.id),data: {turbo_method: :delete,turbo_confirm: "この睡眠記録を削除しますか？"}, class: "btn btn-outline-danger btn-sm" %>
@@ -68,6 +70,7 @@
                     <td>
                       <%= format_record_time(record.study_time) %>
                     </td>
+                    <td><%= format_concentration_level(record.concentration_level) %></td>
                     <td><%= record.study_memo.presence || "-" %></td>
                     <td>
                       <%= link_to "編集", edit_study_record_path(record.id),class: "btn btn-outline-primary btn-sm" %>
