@@ -21,6 +21,8 @@ FactoryBot.define do
       format('%02d:%02d', hour, minute)
     end
 
+    concentration_level { rand(0..5) }
+
     study_memo { Faker::Lorem.sentence }
   end
 end
