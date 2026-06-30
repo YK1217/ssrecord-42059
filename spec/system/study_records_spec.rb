@@ -1,9 +1,13 @@
 require 'rails_helper'
 
+def concentration_level_label(level)
+  level.to_i.zero? ? '評価なし' : level.to_s
+end
+
 RSpec.describe '学習時間登録', type: :system do
   before do
     @user = FactoryBot.create(:user)
-    @study_record = FactoryBot.build(:study_record, user: @user)
+    @study_record = FactoryBot.build(:study_record, user: @user, concentration_level: 3)
   end
 
   context '学習時間が登録できる時' do
@@ -18,6 +22,9 @@ RSpec.describe '学習時間登録', type: :system do
       fill_in '学習開始日時', with: @study_record.start_time
       fill_in '学習終了時刻', with: Time.zone.parse(@study_record.end_clock)
       fill_in '学習内容', with: @study_record.study_memo
+      within('[data-testid="concentration-level-field"]') do
+        choose concentration_level_label(@study_record.concentration_level)
+      end
       # 送信するとトップページに遷移し、StudyRecordモデルのカウントが1上がることを確認する
       expect  do
         click_button '登録する'
@@ -37,6 +44,7 @@ RSpec.describe '学習時間登録', type: :system do
         expect(page).to have_text(I18n.l(@study_record.start_time, format: :time))
         expect(page).to have_text(I18n.l(end_time, format: :time))
         expect(page).to have_text study_time_text
+        expect(page).to have_text concentration_level_label(@study_record.concentration_level)
         expect(page).to have_text(@study_record.study_memo)
       end
     end
@@ -57,7 +65,7 @@ end
 RSpec.describe '学習時間編集' do
   before do
     @user = FactoryBot.create(:user)
-    @study_record = FactoryBot.create(:study_record, user: @user)
+    @study_record = FactoryBot.create(:study_record, user: @user, concentration_level: 3)
   end
 
   context '学習時間が編集できる時' do
@@ -80,17 +88,24 @@ RSpec.describe '学習時間編集' do
       expect(page).to have_field('学習開始日時', with: start_time_value)
       expect(page).to have_field('学習終了時刻', with: end_clock)
       expect(page).to have_field('学習内容', with: @study_record.study_memo)
+      within('[data-testid="concentration-level-field"]') do
+        expect(page).to have_checked_field(concentration_level_label(@study_record.concentration_level))
+      end
       # 投稿内容を編集する
       new_study_date = @study_record.start_time.to_date - 1.day
       new_start_time = Time.zone.local(new_study_date.year, new_study_date.month, new_study_date.day, 9, 0)
       new_end_clock = Time.zone.parse('15:00')
       new_end_time = Time.zone.local(new_study_date.year, new_study_date.month, new_study_date.day, 15, 0)
       new_study_time_text = '6時間0分'
+      new_concentration_level_text = '4'
       new_study_memo = 'テストメモ'
 
       fill_in '学習開始日時', with: new_start_time
       fill_in '学習終了時刻', with: new_end_clock
-      fill_in '学習内容', with: new_study_memo
+      fill_in '学習内容', with: new_study_memo, fill_options: { clear: :backspace }
+      within('[data-testid="concentration-level-field"]') do
+        choose new_concentration_level_text
+      end
       # 送信するとトップページに遷移し、StudyRecordモデルのカウントが変化しないことを確認する
       expect  do
         click_button '更新する'
@@ -105,6 +120,7 @@ RSpec.describe '学習時間編集' do
         expect(page).to have_text(I18n.l(new_start_time, format: :time))
         expect(page).to have_text(I18n.l(new_end_time, format: :time))
         expect(page).to have_text new_study_time_text
+        expect(page).to have_text(new_concentration_level_text)
         expect(page).to have_text new_study_memo
       end
     end
@@ -130,6 +146,10 @@ RSpec.describe '学習時間編集' do
       expect(page).to have_field('学習開始日時', with: start_time_value)
       expect(page).to have_field('学習終了時刻', with: end_clock)
       expect(page).to have_field('学習内容', with: @study_record.study_memo)
+      within('[data-testid="concentration-level-field"]') do
+        expect(page).to have_checked_field(concentration_level_label(@study_record.concentration_level))
+      end
+      binding.pry
       # 学習終了時刻を削除する
       fill_in '学習終了時刻', with: ''
       # 送信するとエラーが表示され、StudyRecordモデルのカウントが変化しないことを確認する
