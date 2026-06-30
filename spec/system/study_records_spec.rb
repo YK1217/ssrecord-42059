@@ -26,7 +26,7 @@ RSpec.describe '学習時間登録', type: :system do
         choose concentration_level_label(@study_record.concentration_level)
       end
       # 送信するとトップページに遷移し、StudyRecordモデルのカウントが1上がることを確認する
-      expect  do
+      expect do
         click_button '登録する'
         expect(page).to have_current_path(root_path)
       end.to change { StudyRecord.count }.by(1)
@@ -107,7 +107,7 @@ RSpec.describe '学習時間編集' do
         choose new_concentration_level_text
       end
       # 送信するとトップページに遷移し、StudyRecordモデルのカウントが変化しないことを確認する
-      expect  do
+      expect do
         click_button '更新する'
         expect(page).to have_current_path(root_path)
       end.not_to(change { StudyRecord.count })
@@ -149,7 +149,6 @@ RSpec.describe '学習時間編集' do
       within('[data-testid="concentration-level-field"]') do
         expect(page).to have_checked_field(concentration_level_label(@study_record.concentration_level))
       end
-      binding.pry
       # 学習終了時刻を削除する
       fill_in '学習終了時刻', with: ''
       # 送信するとエラーが表示され、StudyRecordモデルのカウントが変化しないことを確認する
