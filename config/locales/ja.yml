@@ -13,6 +13,7 @@ ja:
         study_date: 学習日
         study_time: 学習時間
         study_memo: 学習内容
+        concentration_level: 集中度
       sleep_record:
         start_time: 就寝日時
         end_time: 起床時刻
