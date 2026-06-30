@@ -92,6 +92,18 @@ RSpec.describe StudyRecord, type: :model do
         expect(@study_record.errors.full_messages).to include '学習時間は1時間以上8時間以下になるよう入力してください'
       end
 
+      it '集中度が0未満の場合は登録できない' do
+        @study_record.concentration_level = -1
+        @study_record.valid?
+        expect(@study_record.errors.full_messages).to include '集中度は0以上の値にしてください'
+      end
+
+      it '集中度が6以上の場合は登録できない' do
+        @study_record.concentration_level = 6
+        @study_record.valid?
+        expect(@study_record.errors.full_messages).to include '集中度は5以下の値にしてください'
+      end
+
       it '既に同一user同一日付の学習記録が登録されている場合は登録できない' do
         same_user = FactoryBot.create(:user)
         @study_record = FactoryBot.build(:study_record, user: same_user)
