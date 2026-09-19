@@ -198,19 +198,26 @@ git clone https://github.com/YK1217/ssrecord-42059.git
 cd ssrecord-42059
 ```
 
-3. 必要なgemおよびJavaScriptパッケージをインストールする
+3. 必要なgemをインストールする
 
 ```bash
 bundle install
-yarn install
 ```
 
 4. 環境変数を設定する
 
+`.env.example`をコピーして`.env`を作成する。
+
 ```bash
-export BASIC_DB_USER="MySQLのユーザー名"
-export BASIC_DB_PASSWORD="MySQLのパスワード"
-export TEST_PASSWORD="テストログイン用ユーザーのパスワード"
+cp .env.example .env
+```
+
+作成した`.env`に、MySQLのユーザー名・パスワードおよびテストログイン用ユーザーのパスワードを設定する。
+
+```dotenv
+BASIC_DB_USER=MySQLのユーザー名
+BASIC_DB_PASSWORD=MySQLのパスワード
+TEST_PASSWORD=テストログイン用ユーザーのパスワード
 ```
 
 5. データベースを作成してマイグレーションを行い、初期データを投入する
@@ -240,7 +247,8 @@ bin/dev
 
 ## 補足
 
-- bootstrapおよびdartsass-railsを使用しているため、ローカルサーバーは`bin/dev`コマンドで起動する必要がある
+- bootstrapおよびdartsass-railsを使用しているため、ローカルサーバーは`bin/dev`コマンドで起動する必要がある。
+- セキュリティ上の理由から、`.env`以外のファイルにパスワードやデータベース接続情報を直接記載しない。
 - `TEST_PASSWORD`を設定せずに`rails db:seed`を実行すると、テストログイン用ユーザーの作成に失敗する。
 - また、`TEST_PASSWORD`は英数字を各1文字以上含む8文字以上の値に設定する必要がある。これらの条件を満たさない値を`TEST_PASSWORD`に設定している場合も、テストログイン用ユーザーの作成に失敗する。
 
